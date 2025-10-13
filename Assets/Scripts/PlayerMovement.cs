@@ -1,130 +1,286 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("ÒÆ¶¯²ÎÊı")]
-    [SerializeField] private float moveSpeed = 5f;          // ÒÆ¶¯ËÙ¶È
-    [SerializeField] private float acceleration = 10f;      // ¼ÓËÙ¶È
-    [SerializeField] private float deceleration = 8f;       // ¼õËÙ¶È
-    [SerializeField] private float maxSpeed = 8f;           // ×î´óËÙ¶È
+    [Header("ç§»åŠ¨å‚æ•°")]
+    [SerializeField] private float moveSpeed ;
+    [SerializeField] private float acceleration = 10f;
+    [SerializeField] private float deceleration = 8f;
+    [SerializeField] private float maxSpeed ;
 
-    [Header("ÎïÀí²ÎÊı")]
-    [SerializeField] private float friction = 0.2f;         // Ä¦²ÁÁ¦
-    [SerializeField] private bool usePhysics = true;        // ÊÇ·ñÊ¹ÓÃÎïÀíÏµÍ³
+    [Header("è·³è·ƒå‚æ•°")]
+    [SerializeField] private float jumpForce = 3f;
+    [SerializeField] private float groundCheckDistance = 0.1f;
+    [SerializeField] private LayerMask groundLayer = 1; // é»˜è®¤å±‚
 
-    [Header("×é¼şÒıÓÃ")]
-    [SerializeField] private Rigidbody2D rb;               // 2D¸ÕÌåÒıÓÃ
-    [SerializeField] private Transform graphics;           // ÊÓ¾õ²¿·Ö£¨ÓÃÓÚ·­×ª£©
+    [Header("ç‰©ç†å‚æ•°")]
+    [SerializeField] private float friction = 0.2f;
+    [SerializeField] private bool usePhysics = true;
 
-    // ÄÚ²¿±äÁ¿
-    private float horizontalInput;
+    [Header("ç»„ä»¶å¼•ç”¨")]
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Transform graphics;
+
+    [Header("è¾“å…¥è®¾ç½®")]
+    [SerializeField] private InputAction playerInput;
+    [SerializeField] private InputActionReference moveAction;
+    [SerializeField] private InputActionReference jumpAction;
+
+    // å†…éƒ¨å˜é‡
+    private Vector2 moveInput;
     private float currentSpeed;
     private bool isFacingRight = true;
+    [SerializeField] private Quaternion originalPlayerRotation;
 
-    // ¶¯»­Ïà¹Ø£¨¿ÉÑ¡£©
+    // çŠ¶æ€å˜é‡
+    public bool InhibitInput;
     private Animator animator;
     private bool hasAnimator;
+    public Vector2 Force;
+    public Rigidbody2D rigidbody2D;
+    public bool playerInUnomalyArea = false;
+    public bool FlipingPlayer;
+    public bool RestoringRotation;
+    public  bool isGrounded;
+    private bool jumpPressed;
 
     void Start()
     {
-        // ×Ô¶¯»ñÈ¡×é¼ş£¨Èç¹ûÃ»ÓĞÔÚInspectorÖĞ¸³Öµ£©
+        originalPlayerRotation = Quaternion.Euler(0, 0, 0);
+
+        // è‡ªåŠ¨è·å–ç»„ä»¶
+        rigidbody2D = GetComponent<Rigidbody2D>();
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
 
         if (graphics == null)
-            graphics = transform.Find("Graphics"); // ¼ÙÉèÊÓ¾õ²¿·ÖÔÚÃûÎª"Graphics"µÄ×Ó¶ÔÏóÖĞ
+            graphics = transform.Find("Graphics");
 
-        // »ñÈ¡¶¯»­×é¼ş£¨¿ÉÑ¡£©
+        // è®¾ç½®è¾“å…¥åŠ¨ä½œ
+        SetupInputActions();
+
         animator = GetComponent<Animator>();
         hasAnimator = animator != null;
-
-        // ³õÊ¼»¯ËÙ¶È
         currentSpeed = 0f;
     }
 
     void Update()
     {
+        CheckRotation();
         GetInput();
+        
         HandleAnimation();
         FlipCharacter();
     }
 
     void FixedUpdate()
     {
+        CheckGrounded();
+        if (Force != Vector2.zero && rb != null)
+        {
+            rb.AddForce(Force);
+        }
+
+        // å¤„ç†è·³è·ƒ
+        if (jumpPressed && isGrounded)
+        {
+            Jump();
+            jumpPressed = false;
+        }
+
         if (usePhysics && rb != null)
         {
             MoveWithPhysics();
         }
-        else
+    }
+
+    // è®¾ç½®è¾“å…¥åŠ¨ä½œ
+    void SetupInputActions()
+    {
+        
+
+        // å¯ç”¨è¾“å…¥åŠ¨ä½œ
+        if (jumpAction != null)
         {
-            MoveWithTransform();
+            jumpAction.action.Enable();
+        }
+
+        if (moveAction != null)
+        {
+            moveAction.action.Enable();
         }
     }
 
-    // »ñÈ¡Íæ¼ÒÊäÈë
+    // è·å–è¾“å…¥
     void GetInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal"); // Ê¹ÓÃRaw»ñµÃË²Ê±ÊäÈë
-
-        // µ÷ÊÔĞÅÏ¢£¨ÔÚ¿ª·¢Ê±ÓĞÓÃ£©
-        Debug.Log($"Input: {horizontalInput}, Current Speed: {currentSpeed}");
-    }
-
-    // Ê¹ÓÃÎïÀíÏµÍ³ÒÆ¶¯£¨¸üÕæÊµ£©
-    void MoveWithPhysics()
-    {
-        Vector2 targetVelocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
-
-        // Æ½»¬¹ı¶Éµ½Ä¿±êËÙ¶È
-        rb.velocity = Vector2.Lerp(rb.velocity, targetVelocity, acceleration * Time.fixedDeltaTime);
-
-        // Ó¦ÓÃÄ¦²ÁÁ¦£¨µ±Ã»ÓĞÊäÈëÊ±£©
-        if (Mathf.Abs(horizontalInput) < 0.1f)
+        if (!InhibitInput)
         {
-            rb.velocity = new Vector2(rb.velocity.x * (1 - friction), rb.velocity.y);
-        }
-
-        // ÏŞÖÆ×î´óËÙ¶È
-        if (Mathf.Abs(rb.velocity.x) > maxSpeed)
-        {
-            rb.velocity = new Vector2(Mathf.Sign(rb.velocity.x) * maxSpeed, rb.velocity.y);
-        }
-    }
-
-    // Ê¹ÓÃTransformÒÆ¶¯£¨¸ü¼òµ¥Ö±½Ó£©
-    void MoveWithTransform()
-    {
-        // ¼ÆËãÄ¿±êËÙ¶È
-        float targetSpeed = horizontalInput * moveSpeed;
-
-        // ¼ÓËÙºÍ¼õËÙ
-        if (Mathf.Abs(horizontalInput) > 0.1f)
-        {
-            // ¼ÓËÙ
-            currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
+            // ç§»åŠ¨è¾“å…¥
+            if (moveAction != null)
+            {
+                moveInput = moveAction.action.ReadValue<Vector2>();
+            }
+            float jumpValue = jumpAction.action.ReadValue<float>();
+            // è·³è·ƒè¾“å…¥float jumpValue = jumpAction.action.ReadValue<float>();
+            if (jumpValue > 0.5f && !jumpPressed)
+            {
+                jumpPressed = true;
+            }
         }
         else
         {
-            // ¼õËÙ
-            currentSpeed = Mathf.Lerp(currentSpeed, 0f, deceleration * Time.fixedDeltaTime);
+            moveInput = Vector2.zero;
+            jumpPressed = false;
         }
-
-        // ÏŞÖÆ×î´óËÙ¶È
-        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
-
-        // Ó¦ÓÃÒÆ¶¯
-        Vector3 movement = new Vector3(currentSpeed, 0f, 0f) * Time.fixedDeltaTime;
-        transform.Translate(movement, Space.World);
     }
 
-    // ·­×ª½ÇÉ«³¯Ïò
+    // æ£€æŸ¥æ˜¯å¦åœ¨åœ°é¢ä¸Š
+    void CheckGrounded()
+    {
+        Vector2 rayStart = (Vector2)transform.position - transform.up * new Vector2(0, GetComponent<Collider2D>().bounds.extents.y + 0.01f);
+
+        // ä½¿ç”¨ RaycastAll æ£€æµ‹æ‰€æœ‰ç¢°æ’ä½“
+        RaycastHit2D[] allHits = Physics2D.RaycastAll(rayStart, -transform.up, groundCheckDistance, groundLayer);
+
+        bool foundGround = false;
+
+        // éå†æ‰€æœ‰å‘½ä¸­çš„ç¢°æ’ä½“
+        foreach (RaycastHit2D hit in allHits)
+        {
+            if (hit.collider != null)
+            {
+                Debug.Log("æ£€æµ‹åˆ°ç¢°æ’ä½“: " + hit.collider.name + ", Tag: " + hit.collider.tag);
+
+                if (hit.collider.CompareTag("Ground"))
+                {
+                    foundGround = true;
+                    break; // æ‰¾åˆ°åœ°é¢å°±é€€å‡ºå¾ªç¯
+                }
+            }
+        }
+
+        isGrounded = foundGround;
+        Debug.Log("isGrounded: " + isGrounded);
+
+        // è°ƒè¯•å¯è§†åŒ–
+        Debug.DrawRay(rayStart, -transform.up * groundCheckDistance, isGrounded ? Color.green : Color.red, 0.1f);
+        if (isGrounded)
+        {
+            gameObject.GetComponent<HeightTrackMono>().EndJumpTracking();
+        }
+    }
+
+    // è·³è·ƒæ–¹æ³•
+    void Jump()
+    {
+        if (rb != null && isGrounded)
+        {
+            // æ€»æ˜¯ä½¿ç”¨ç©å®¶çš„å‘ä¸Šæ–¹å‘ä½œä¸ºè·³è·ƒæ–¹å‘
+            gameObject.GetComponent<HeightTrackMono>().StartJumpTracking();
+            Vector2 jumpDirection = transform.up * jumpForce;
+
+            // åº”ç”¨è·³è·ƒåŠ›
+            rb.AddForce(jumpDirection, ForceMode2D.Impulse);
+
+            // è§¦å‘è·³è·ƒåŠ¨ç”»ï¼ˆå¦‚æœæœ‰ï¼‰
+            if (hasAnimator)
+            {
+                animator.SetTrigger("Jump");
+            }
+
+            Debug.Log($"è·³è·ƒï¼æ–¹å‘: {jumpDirection}, ç©å®¶æ—‹è½¬: {transform.eulerAngles.z}");
+        }
+    }
+    // ä½¿ç”¨ç‰©ç†ç³»ç»Ÿç§»åŠ¨
+
+
+    void MoveWithPhysics()
+    {
+        
+        //Vector3 localMove = transform.right * moveInput.x * moveSpeed;             // åŸºäºç©å®¶çš„å±€éƒ¨åæ ‡ç³»è®¡ç®—ç§»åŠ¨æ–¹å‘
+        Vector3 localMove =new Vector3(1,0,0)* moveInput.x * moveSpeed;                             // ä¸åŸºäºç©å®¶çš„å±€éƒ¨åæ ‡ç³»è®¡ç®—ç§»åŠ¨æ–¹å‘
+        // è®¡ç®—ç›®æ ‡é€Ÿåº¦ä¸å®é™…é€Ÿåº¦çš„å·®å¼‚
+        Vector2 currentVelocity = rb.linearVelocity;
+        Vector2 velocityDifference = new Vector2(localMove.x, 0) - new Vector2(currentVelocity.x, 0);
+
+        // æ ¹æ®é€Ÿåº¦å·®å¼‚è®¡ç®—éœ€è¦æ–½åŠ çš„åŠ›
+        // ä½¿ç”¨åŠ é€Ÿåº¦å‚æ•°æ¥æ§åˆ¶åŠ›çš„å¼ºåº¦
+        //Vector2 forceToApply = velocityDifference * acceleration;
+        Vector2 forceToApply = new Vector2(localMove.x, 0) ;
+        //float maxForce = moveSpeed * acceleration;
+        //if (forceToApply.magnitude > maxForce)
+        //{
+        //    forceToApply = forceToApply.normalized * maxForce;
+        //}
+        Debug.Log("forceToApply" + forceToApply);
+        rb.AddForce(forceToApply, ForceMode2D.Force);
+
+        if (Mathf.Abs(moveInput.x) < 0.1f)
+        {
+            Vector2 frictionForce = -new Vector2(currentVelocity.x, 0) * friction;
+            rb.AddForce(frictionForce, ForceMode2D.Force);
+        }
+
+        if (Mathf.Abs(rb.linearVelocity.x) > maxSpeed)
+        {
+            rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed, rb.linearVelocity.y);
+        }
+    }
+
+    //void MoveWithPhysics()
+    //{
+    //    // åŸºäºç©å®¶çš„å±€éƒ¨åæ ‡ç³»è®¡ç®—ç§»åŠ¨æ–¹å‘
+    //    Vector3 localMove = transform.right * moveInput.x * moveSpeed;
+
+    //    // è®¡ç®—ç›®æ ‡é€Ÿåº¦ä¸å®é™…é€Ÿåº¦çš„å·®å¼‚
+    //    Vector2 currentVelocity = rb.linearVelocity;
+    //    Vector2 velocityDifference = new Vector2(localMove.x, 0) - new Vector2(currentVelocity.x, 0);
+
+    //    // æ ¹æ®é€Ÿåº¦å·®å¼‚è®¡ç®—éœ€è¦æ–½åŠ çš„åŠ›
+    //    Vector2 forceToApply = velocityDifference * acceleration;
+
+    //    // æ ¹æ®ç©å®¶æ˜¯å¦åœ¨åœ°é¢ä¸Šè°ƒæ•´åŠ›çš„å¼ºåº¦
+    //    float forceMultiplier = isGrounded ? 1f : 0.5f; // ç©ºä¸­æ§åˆ¶åŠ›å‡åŠ
+    //    forceToApply *= forceMultiplier;
+
+    //    // é™åˆ¶æœ€å¤§åŠ›
+    //    float maxForce = moveSpeed * acceleration;
+    //    if (forceToApply.magnitude > maxForce)
+    //    {
+    //        forceToApply = forceToApply.normalized * maxForce;
+    //    }
+
+    //    // å¯¹ç©å®¶æ–½åŠ åŠ›
+    //    rb.AddForce(forceToApply, ForceMode2D.Force);
+
+    //    // åº”ç”¨æ‘©æ“¦åŠ›ï¼ˆå½“æ²¡æœ‰è¾“å…¥æ—¶ä¸”åœ¨åœ°é¢ä¸Šï¼‰
+    //    //if (Mathf.Abs(moveInput.x) < 0.1f && isGrounded)
+    //    //{
+    //    //    // æ–½åŠ ä¸å½“å‰é€Ÿåº¦æ–¹å‘ç›¸åçš„æ‘©æ“¦åŠ›
+    //    //    Vector2 frictionForce = -new Vector2(currentVelocity.x, 0) * friction;
+    //    //    rb.AddForce(frictionForce, ForceMode2D.Force);
+    //    //}
+
+    //    // é™åˆ¶æœ€å¤§æ°´å¹³é€Ÿåº¦
+    //    if (Mathf.Abs(rb.linearVelocity.x) > maxSpeed)
+    //    {
+    //        rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed, rb.linearVelocity.y);
+    //    }
+    //}
+
+    // ç¿»è½¬è§’è‰²æœå‘
     void FlipCharacter()
     {
-        if (horizontalInput > 0 && !isFacingRight)
+        if (moveInput.x > 0 && !isFacingRight)
         {
             Flip();
         }
-        else if (horizontalInput < 0 && isFacingRight)
+        else if (moveInput.x < 0 && isFacingRight)
         {
             Flip();
         }
@@ -134,7 +290,6 @@ public class PlayerMovement : MonoBehaviour
     {
         isFacingRight = !isFacingRight;
 
-        // Èç¹ûÓĞµ¥¶ÀµÄÊÓ¾õ²¿·Ö£¬·­×ªËü
         if (graphics != null)
         {
             Vector3 scale = graphics.localScale;
@@ -143,43 +298,130 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            // Èç¹ûÃ»ÓĞ£¬·­×ªÕû¸öÎïÌå
             Vector3 scale = transform.localScale;
             scale.x *= -1;
             transform.localScale = scale;
         }
     }
 
-    // ´¦Àí¶¯»­£¨¿ÉÑ¡£©
+    // å¤„ç†åŠ¨ç”»
     void HandleAnimation()
     {
         if (!hasAnimator) return;
 
-        // ÉèÖÃÒÆ¶¯ËÙ¶È²ÎÊı
-        float speed = usePhysics ? Mathf.Abs(rb.velocity.x) : Mathf.Abs(currentSpeed);
+        float speed = usePhysics ? Mathf.Abs(rb.linearVelocity.x) : Mathf.Abs(currentSpeed);
         animator.SetFloat("Speed", speed);
-
-        // ÉèÖÃÊÇ·ñÔÚµØÃæ²ÎÊı£¨Èç¹ûĞèÒª£©
-        // animator.SetBool("IsGrounded", IsGrounded());
+        animator.SetBool("IsGrounded", isGrounded);
     }
 
-    // ¹«¹²·½·¨£¬ÓÃÓÚÍâ²¿¿ØÖÆ
+    // å…¬å…±æ–¹æ³•
     public void SetMovementEnabled(bool enabled)
     {
         this.enabled = enabled;
         if (rb != null && !enabled)
         {
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
         }
     }
 
     public float GetCurrentSpeed()
     {
-        return usePhysics ? rb.velocity.x : currentSpeed;
+        return usePhysics ? rb.linearVelocity.x : currentSpeed;
     }
 
     public bool IsMoving()
     {
         return Mathf.Abs(GetCurrentSpeed()) > 0.1f;
+    }
+
+    // æ–°çš„Input Systemäº‹ä»¶å¤„ç†ï¼ˆå¯é€‰ï¼‰
+    public void OnMove(InputValue value)
+    {
+        moveInput = value.Get<Vector2>();
+    }
+
+    public void OnJump(InputValue value)
+    {
+        if (!InhibitInput && value.isPressed)
+        {
+            jumpPressed = true;
+        }
+    }
+
+    void OnDestroy()
+    {
+        // æ¸…ç†èµ„æº
+        if (moveAction != null)
+        {
+            moveAction.action.Disable();
+        }
+
+        if (jumpAction != null)
+        {
+            jumpAction.action.Disable();
+        }
+    }
+
+    public void FlipPlayerUpsideDown(float RotationDuration, float abnormalGravity)
+    {
+        rb.gravityScale = abnormalGravity;
+    }
+
+    public void RestorePlayerRotation(float RotationDuration)
+    {
+        rb.gravityScale = 2f;
+    }
+
+    public IEnumerator SmoothRestoreRotation(float duration)
+    {
+        float elapsedTime = 0f;
+        Quaternion startRotation = transform.rotation;
+        RestoringRotation = true;
+        while (elapsedTime < duration)
+        {
+            transform.rotation = Quaternion.Lerp(startRotation, originalPlayerRotation, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.rotation = originalPlayerRotation;
+        RestoringRotation = false;
+    }
+
+    private IEnumerator SmoothFlipPlayer(float duration)
+    {
+        float elapsedTime = 0f;
+        Quaternion startRotation = transform.rotation;
+        Quaternion targetRotation = Quaternion.Euler(0, 0, 180f);
+        FlipingPlayer = true;
+        while (elapsedTime < duration)
+        {
+            transform.rotation = Quaternion.Lerp(startRotation, targetRotation, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.rotation = targetRotation;
+        FlipingPlayer = false;
+    }
+
+    void CheckRotation()
+    {
+        if (playerInUnomalyArea)
+        {
+            if (transform.rotation != Quaternion.Euler(0, 0, 180f) && !RestoringRotation)
+            {
+                Debug.Log(transform.rotation + "transform.rotation");
+                Debug.Log("playerInUnomalyArea");
+                StartCoroutine(SmoothFlipPlayer(0.1f));
+            }
+        }
+        else
+        {
+            if (transform.rotation != originalPlayerRotation && !FlipingPlayer)
+            {
+                StartCoroutine(SmoothRestoreRotation(0.1f));
+            }
+        }
     }
 }
