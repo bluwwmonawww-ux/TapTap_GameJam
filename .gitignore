@@ -98,10 +98,10 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-
+*.csproj
+*/ProjectSettings
 # Chutzpah Test files
 _Chutzpah*
-
 # Visual C++ cache files
 ipch/
 *.aps
@@ -118,7 +118,7 @@ ipch/
 *.vsp
 *.vspx
 *.sap
-
+*.ProjectSettings
 # Visual Studio Trace Files
 *.e2e
 

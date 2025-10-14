@@ -58,7 +58,6 @@ public class PlayerActionRecorder : MonoBehaviour
     {
         if (Time.time - lastRecordTime >= recordInterval)
         {
-            // 获取当前玩家状态
             Vector3 currentPos = transform.position;
             Quaternion currentRot = transform.rotation;
             Vector2 currentMoveDir = playerCommand.moveDir;
@@ -66,8 +65,6 @@ public class PlayerActionRecorder : MonoBehaviour
             float currentSpeed = playerController.GetCurrentSpeed();
             bool currentJumping = playerRigidBody.linearVelocity.y > 0.1f;
             Vector2 currentVelocity = playerRigidBody.linearVelocity;
-            
-            // 创建动作帧
             PlayerActionFrame frame = new PlayerActionFrame(
                 Time.time, currentPos, currentRot, currentMoveDir, 
                 currentGrounded, currentSpeed, currentJumping, currentVelocity
@@ -99,20 +96,14 @@ public class PlayerActionRecorder : MonoBehaviour
             }
         }
         
-        return null; // 没有找到对应时间的帧
+        return null; 
     }
     
-    /// <summary>
-    /// 获取记录的历史帧数量
-    /// </summary>
     public int GetHistoryCount()
     {
         return actionHistory.Count;
     }
     
-    /// <summary>
-    /// 清除所有历史记录
-    /// </summary>
     public void ClearHistory()
     {
         actionHistory.Clear();

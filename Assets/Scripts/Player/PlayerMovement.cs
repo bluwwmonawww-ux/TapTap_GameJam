@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float maxSpeed ;
 
     [Header("跳跃参数")]
-    [SerializeField] private float jumpForce = 3f;
+    [SerializeField] private float jumpForce ;
     [SerializeField] private float groundCheckDistance = 0.1f;
     [SerializeField] private LayerMask groundLayer = 1; // 默认层
 
@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
     public bool RestoringRotation;
     public  bool isGrounded;
     private bool jumpPressed;
-
+    [SerializeField] public  bool InverseAD;
     void Start()
     {
         originalPlayerRotation = Quaternion.Euler(0, 0, 0);
@@ -75,10 +75,13 @@ public class PlayerMovement : MonoBehaviour
         
         HandleAnimation();
         FlipCharacter();
+       
     }
 
     void FixedUpdate()
     {
+        
+
         CheckGrounded();
         if (Force != Vector2.zero && rb != null)
         {
@@ -118,15 +121,17 @@ public class PlayerMovement : MonoBehaviour
     // 获取输入
     void GetInput()
     {
+        
         if (!InhibitInput)
         {
-            // 移动输入
-            if (moveAction != null)
+
+            moveInput = moveAction.action.ReadValue<Vector2>();
+            if (InverseAD)
             {
-                moveInput = moveAction.action.ReadValue<Vector2>();
+                moveInput = new Vector2(-moveInput.x, moveInput.y);
             }
+
             float jumpValue = jumpAction.action.ReadValue<float>();
-            // 跳跃输入float jumpValue = jumpAction.action.ReadValue<float>();
             if (jumpValue > 0.5f && !jumpPressed)
             {
                 jumpPressed = true;
@@ -154,7 +159,6 @@ public class PlayerMovement : MonoBehaviour
         {
             if (hit.collider != null)
             {
-                Debug.Log("检测到碰撞体: " + hit.collider.name + ", Tag: " + hit.collider.tag);
 
                 if (hit.collider.CompareTag("Ground"))
                 {
@@ -165,14 +169,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isGrounded = foundGround;
-        Debug.Log("isGrounded: " + isGrounded);
 
         // 调试可视化
         Debug.DrawRay(rayStart, -transform.up * groundCheckDistance, isGrounded ? Color.green : Color.red, 0.1f);
-        if (isGrounded)
-        {
-            gameObject.GetComponent<HeightTrackMono>().EndJumpTracking();
-        }
+        //if (isGrounded)
+        //{
+        //    gameObject.GetComponent<HeightTrackMono>().EndJumpTracking();
+        //}
     }
 
     // 跳跃方法
@@ -181,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
         if (rb != null && isGrounded)
         {
             // 总是使用玩家的向上方向作为跳跃方向
-            gameObject.GetComponent<HeightTrackMono>().StartJumpTracking();
+            //gameObject.GetComponent<HeightTrackMono>().StartJumpTracking();
             Vector2 jumpDirection = transform.up * jumpForce;
 
             // 应用跳跃力
@@ -217,10 +220,9 @@ public class PlayerMovement : MonoBehaviour
         //{
         //    forceToApply = forceToApply.normalized * maxForce;
         //}
-        Debug.Log("forceToApply" + forceToApply);
         rb.AddForce(forceToApply, ForceMode2D.Force);
 
-        if (Mathf.Abs(moveInput.x) < 0.1f)
+        if (Mathf.Abs(moveInput.x) < 0.1f && isGrounded)
         {
             Vector2 frictionForce = -new Vector2(currentVelocity.x, 0) * friction;
             rb.AddForce(frictionForce, ForceMode2D.Force);
@@ -369,7 +371,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void RestorePlayerRotation(float RotationDuration)
     {
-        rb.gravityScale = 2f;
+        rb.gravityScale = 10f;
     }
 
     public IEnumerator SmoothRestoreRotation(float duration)
