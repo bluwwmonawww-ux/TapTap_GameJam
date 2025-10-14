@@ -107,6 +107,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.2D.Sprite.Editor", "U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Multiplayer.Center.Common", "Unity.Multiplayer.Center.Common.csproj", "{6883A373-AC0E-85D6-96E7-634617F2EC7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{F77ECE77-BA28-4DEC-5582-5C6672574143}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.InputSystem.ForUI", "Unity.InputSystem.ForUI.csproj", "{34039802-6885-C90F-B029-BE36A9D95025}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Collections.CodeGen", "Unity.Collections.CodeGen.csproj", "{30CE31EB-A4D3-DB52-6617-1599B09E7BD1}"
@@ -118,8 +120,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Mathematics.Editor", "Unity.Mathematics.Editor.csproj", "{02F60F8F-37D6-FB27-39C2-112A352D5751}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualScripting.SettingsProvider.Editor", "Unity.VisualScripting.SettingsProvider.Editor.csproj", "{69EA6E8B-3B11-2F28-F92A-44CF3DD57553}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{F77ECE77-BA28-4DEC-5582-5C6672574143}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.InputSystem.TestFramework", "Unity.InputSystem.TestFramework.csproj", "{822BB1E8-83B5-EA4F-1F5B-328BE9C75DD2}"
 EndProject
@@ -199,13 +199,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualScripting.State
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Multiplayer.Center.Common", "Unity.Multiplayer.Center.Common.Player.csproj", "{794C2555-A3AD-EEFB-F270-AB9D06CEFA2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.Player.csproj", "{1E7C1028-C5EA-BECC-976B-5982D5D587C0}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.InputSystem.ForUI", "Unity.InputSystem.ForUI.Player.csproj", "{39B57FE6-5442-E0E4-7569-852E79E3344B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.2D.Tilemap.Extras", "Unity.2D.Tilemap.Extras.Player.csproj", "{7F6600F2-9F7F-A8A9-6A6E-C9EAA11B4DBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.2D.Animation.Runtime", "Unity.2D.Animation.Runtime.Player.csproj", "{10B8548C-909C-7E48-0BB9-CD8098A44A83}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.Player.csproj", "{1E7C1028-C5EA-BECC-976B-5982D5D587C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.InputSystem.TestFramework", "Unity.InputSystem.TestFramework.Player.csproj", "{6877A95C-FE01-C334-6DF6-98E1ED0F35D5}"
 EndProject
@@ -441,6 +441,10 @@ Global
 		{6883A373-AC0E-85D6-96E7-634617F2EC7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6883A373-AC0E-85D6-96E7-634617F2EC7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6883A373-AC0E-85D6-96E7-634617F2EC7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F77ECE77-BA28-4DEC-5582-5C6672574143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F77ECE77-BA28-4DEC-5582-5C6672574143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F77ECE77-BA28-4DEC-5582-5C6672574143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F77ECE77-BA28-4DEC-5582-5C6672574143}.Release|Any CPU.Build.0 = Release|Any CPU
 		{34039802-6885-C90F-B029-BE36A9D95025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{34039802-6885-C90F-B029-BE36A9D95025}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34039802-6885-C90F-B029-BE36A9D95025}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -465,10 +469,6 @@ Global
 		{69EA6E8B-3B11-2F28-F92A-44CF3DD57553}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69EA6E8B-3B11-2F28-F92A-44CF3DD57553}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69EA6E8B-3B11-2F28-F92A-44CF3DD57553}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F77ECE77-BA28-4DEC-5582-5C6672574143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F77ECE77-BA28-4DEC-5582-5C6672574143}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F77ECE77-BA28-4DEC-5582-5C6672574143}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F77ECE77-BA28-4DEC-5582-5C6672574143}.Release|Any CPU.Build.0 = Release|Any CPU
 		{822BB1E8-83B5-EA4F-1F5B-328BE9C75DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{822BB1E8-83B5-EA4F-1F5B-328BE9C75DD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{822BB1E8-83B5-EA4F-1F5B-328BE9C75DD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -625,6 +625,10 @@ Global
 		{794C2555-A3AD-EEFB-F270-AB9D06CEFA2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{794C2555-A3AD-EEFB-F270-AB9D06CEFA2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{794C2555-A3AD-EEFB-F270-AB9D06CEFA2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E7C1028-C5EA-BECC-976B-5982D5D587C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E7C1028-C5EA-BECC-976B-5982D5D587C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E7C1028-C5EA-BECC-976B-5982D5D587C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E7C1028-C5EA-BECC-976B-5982D5D587C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{39B57FE6-5442-E0E4-7569-852E79E3344B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{39B57FE6-5442-E0E4-7569-852E79E3344B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39B57FE6-5442-E0E4-7569-852E79E3344B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -637,10 +641,6 @@ Global
 		{10B8548C-909C-7E48-0BB9-CD8098A44A83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10B8548C-909C-7E48-0BB9-CD8098A44A83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10B8548C-909C-7E48-0BB9-CD8098A44A83}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E7C1028-C5EA-BECC-976B-5982D5D587C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E7C1028-C5EA-BECC-976B-5982D5D587C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E7C1028-C5EA-BECC-976B-5982D5D587C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E7C1028-C5EA-BECC-976B-5982D5D587C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6877A95C-FE01-C334-6DF6-98E1ED0F35D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6877A95C-FE01-C334-6DF6-98E1ED0F35D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6877A95C-FE01-C334-6DF6-98E1ED0F35D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
