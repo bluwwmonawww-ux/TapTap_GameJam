@@ -667,6 +667,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5036405851614278164, guid: 02399869936eeaf4a8a88f5fe1c045a0, type: 3}
+      propertyPath: force.x
+      value: -48.42
+      objectReference: {fileID: 0}
     - target: {fileID: 6224448106613940867, guid: 02399869936eeaf4a8a88f5fe1c045a0, type: 3}
       propertyPath: m_Name
       value: 'anomaly Force area '
@@ -1058,11 +1062,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 485032276304361732, guid: b834bb0f595be1f46a6200ed0c661a60, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 22.12
+      value: 26.2
       objectReference: {fileID: 0}
     - target: {fileID: 485032276304361732, guid: b834bb0f595be1f46a6200ed0c661a60, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.38
+      value: 4.45
       objectReference: {fileID: 0}
     - target: {fileID: 485032276304361732, guid: b834bb0f595be1f46a6200ed0c661a60, type: 3}
       propertyPath: m_LocalPosition.z
