@@ -145,4 +145,10 @@ public class PlayerController : MonoBehaviour
         // 下落时更强的重力
         playerRigidBody.gravityScale = playerRigidBody.linearVelocity.y < 0 ? fallGravityScale : baseGravityScale;
     }
+    
+
+    public float GetCurrentSpeed()
+    {
+        return _currentSpeed;
+    }
 }

@@ -9,9 +9,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
-    <ProjectGuid>{F77ECE77-BA28-4DEC-5582-5C6672574143}</ProjectGuid>
+    <RootNamespace></RootNamespace>
+    <ProjectGuid>{D3C6708D-5415-8709-7E30-4D8B74AC8313}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -62,7 +61,17 @@
     <Analyzer Include="F:\6000.2.7f2\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Test.cs" />
+    <Compile Include="Assets\Scripts\PhysicCheck.cs" />
+    <Compile Include="Assets\Scripts\mambaout.cs" />
+    <Compile Include="Assets\Scripts\GravityUnoamlyArea.cs" />
+    <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\ForceUnomalyArea.cs" />
+    <Compile Include="Assets\Scripts\HeightTrackMono.cs" />
+    <Compile Include="Assets\PlayerInput\PlayerInputSystem.cs" />
+    <Compile Include="Assets\Scripts\PlayerCommand.cs" />
+    <Compile Include="Assets\Scripts\ShadowController.cs" />
+    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\PlayerActionRecorder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
