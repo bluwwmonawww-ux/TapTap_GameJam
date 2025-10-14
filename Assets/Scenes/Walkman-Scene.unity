@@ -209,6 +209,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &436269421 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7894468882212923231, guid: 692504edf9a3d5f428f77cf172f523a2, type: 3}
+  m_PrefabInstance: {fileID: 6842714946219833380}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &436269427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436269421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27368379aabd9dd4a9c56d21d29d728b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeLimitCube
+  Disappear: 0
+  FadeInTime: 0.2
+  DisplayTime: 2
+  Staytime: -1
+  ContactTime: 0.3
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,11 +505,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &2112174459 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 5473101808532367168, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-  m_PrefabInstance: {fileID: 8346495201737129195}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2039779453575262779
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -908,7 +925,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7894468882212923231, guid: 692504edf9a3d5f428f77cf172f523a2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 436269427}
   m_SourcePrefab: {fileID: 100100000, guid: 692504edf9a3d5f428f77cf172f523a2, type: 3}
 --- !u!1001 &7968614764333766547
 PrefabInstance:
@@ -979,14 +999,6 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: f3bb01cd4812e0643abd9cb01942a176, type: 2}
-    - target: {fileID: 5473101808532367168, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: m_GravityScale
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5473101808532367168, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: m_AngularDamping
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5973837415759071145, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.05
@@ -1026,38 +1038,6 @@ PrefabInstance:
     - target: {fileID: 5973837415759071145, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7959961928510208282, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: rb
-      value: 
-      objectReference: {fileID: 2112174459}
-    - target: {fileID: 7959961928510208282, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: friction
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7959961928510208282, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: maxSpeed
-      value: 15.11
-      objectReference: {fileID: 0}
-    - target: {fileID: 7959961928510208282, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: jumpForce
-      value: 30.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7959961928510208282, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: moveSpeed
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 7959961928510208282, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: isGrounded
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7959961928510208282, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: rigidbody2D
-      value: 
-      objectReference: {fileID: 2112174459}
-    - target: {fileID: 7959961928510208282, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
-      propertyPath: originalPlayerRotation.w
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8526980215577824572, guid: f0cc430338189e94bbb36bbb52b01fcb, type: 3}
       propertyPath: m_Name
