@@ -10,7 +10,11 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
+<<<<<<< HEAD
     <ProjectGuid>{F77ECE77-BA28-4DEC-5582-5C6672574143}</ProjectGuid>
+=======
+    <ProjectGuid>{D3C6708D-5415-8709-7E30-4D8B74AC8313}</ProjectGuid>
+>>>>>>> 365841a00280aee30fa1536595503643c12e8662
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -63,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\PhysicCheck.cs" />
     <Compile Include="Assets\Scripts\mambaout.cs" />
+<<<<<<< HEAD
     <Compile Include="Assets\Scripts\Bug Area\ElementTransform.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Barriers\Spike.cs" />
@@ -103,6 +108,17 @@
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+=======
+    <Compile Include="Assets\Scripts\GravityUnoamlyArea.cs" />
+    <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\ForceUnomalyArea.cs" />
+    <Compile Include="Assets\Scripts\HeightTrackMono.cs" />
+    <Compile Include="Assets\PlayerInput\PlayerInputSystem.cs" />
+    <Compile Include="Assets\Scripts\PlayerCommand.cs" />
+    <Compile Include="Assets\Scripts\ShadowController.cs" />
+    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\PlayerActionRecorder.cs" />
+>>>>>>> 365841a00280aee30fa1536595503643c12e8662
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
