@@ -504,11 +504,10 @@ MonoBehaviour:
   gravity: 0
   baseGravityScale: 0
   fallGravityScale: 3
-  jumpMoveSpeed: 5
   maxRunSpeed: 10
   jumpHeight: 1.5
   maxJumpBufferTime: 0.2
-  moveToMaxTime: 0.3
+  moveToMaxTime: 0.2
   stopToZeroTime: 0.1
   coyoteTime: 0
   physicsCheck: {fileID: 0}
