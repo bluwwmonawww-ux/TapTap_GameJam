@@ -28,5 +28,11 @@ namespace SaveSystemTutorial
             Debug.LogWarning($"No save file found at {path}");
             return default;
         }
+
+        public static void DeleteSaveFile(string saveFileName)
+        {
+            var path = Path.Combine(Application.persistentDataPath, saveFileName);
+            
+        }
     }
 }

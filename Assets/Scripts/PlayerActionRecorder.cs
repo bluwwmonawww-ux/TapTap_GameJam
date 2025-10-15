@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public class PlayerActionFrame
@@ -30,8 +31,8 @@ public class PlayerActionRecorder : MonoBehaviour
 {
     [Header("记录设置")]
     [SerializeField] private float recordDuration = 2f; // 记录2秒的数据
-    [SerializeField] private float recordInterval = 0.02f; 
-    
+    [SerializeField] private float recordInterval = 0.02f;
+    const string PLAYER_DATA_FILE_NAME = "PlayerData.json";
     private Queue<PlayerActionFrame> actionHistory = new Queue<PlayerActionFrame>();
     private PlayerController playerController;
     private PhysicCheck physicsCheck;
@@ -107,6 +108,16 @@ public class PlayerActionRecorder : MonoBehaviour
     public void ClearHistory()
     {
         actionHistory.Clear();
+    }
+
+    public void Save()
+    {
+        SaveSystemTutorial.SaveSystem.SaveByJson(PLAYER_DATA_FILE_NAME, transform.position);
+    }
+    public void Load()
+    {
+        var saveData = SaveSystemTutorial.SaveSystem.LoadFromJson<Vector3>(PLAYER_DATA_FILE_NAME);
+        transform.position = saveData;
     }
 }
 
