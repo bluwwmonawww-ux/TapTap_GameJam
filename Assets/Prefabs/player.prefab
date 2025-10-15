@@ -222,7 +222,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: f3bb01cd4812e0643abd9cb01942a176, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -270,11 +270,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 427254a99076fea499b6d4589c731c09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  moveSpeed: 150
-  acceleration: 40
-  deceleration: 8
-  maxSpeed: 15.11
-  jumpForce: 30.6
+  Acceleration: 150
+  maxSpeed: 15
+  jumpForce: 30
   groundCheckDistance: 0.1
   groundLayer:
     serializedVersion: 2

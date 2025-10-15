@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3872967220369062647}
   m_Layer: 5
   m_Name: Blue
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -177,7 +177,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 20.1, y: 7.8}
+  m_AnchoredPosition: {x: 20.099976, y: 7.799988}
   m_SizeDelta: {x: 3840, y: 2160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8232792089437284705
