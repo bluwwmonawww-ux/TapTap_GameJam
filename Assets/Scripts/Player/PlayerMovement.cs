@@ -137,7 +137,6 @@ public class PlayerMovement : MonoBehaviour
             }
 
             float jumpValue = jumpAction.action.ReadValue<float>();
-            Debug.Log("jumpValue" + jumpValue);
             if (jumpValue > 0.5f && !jumpPressed)
             {
                 jumpPressed = true;
