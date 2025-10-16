@@ -30,6 +30,9 @@ public class PlayerController : MonoBehaviour
     private float _decelerationRate;
     
     private float _coyoteTimeCounter;
+
+    public float CurrentSpeed => _currentSpeed;
+
     void Start()
     {
         physicsCheck = gameObject.GetComponent<PhysicCheck>();
