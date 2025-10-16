@@ -5,7 +5,7 @@ using UnityEngine;
 public class UnoamlyGravityArea : MonoBehaviour
 {
     [Header("重力异常设置")]
-    [SerializeField] private float abnormalGravity = -2f; // 异常重力值
+    [SerializeField] private float abnormalGravity = -98f; // 异常重力值
 
     private float originalGravity; // 存储原始重力值
     private PlayerMovement playerMovement; // 玩家移动组件引用

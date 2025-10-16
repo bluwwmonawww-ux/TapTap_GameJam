@@ -150,6 +150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffd78cebca6596e418b9792a905866fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnoamlyGravityArea
-  abnormalGravity: -2
+  abnormalGravity: -98
   playerTransform: {fileID: 0}
   originalPlayerRotation: {x: 0, y: 0, z: 0, w: 0}
