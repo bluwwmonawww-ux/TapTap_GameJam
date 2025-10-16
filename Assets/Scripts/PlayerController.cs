@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float fallGravityScale = 3f;    // 下落重力倍数
     
     [Header("移动参数")]
-    [SerializeField] private float jumpMoveSpeed = 5f;
     [SerializeField] private float maxRunSpeed = 10f;      // 奔跑速度
     [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float maxJumpBufferTime = 0.2f;
@@ -63,16 +62,6 @@ public class PlayerController : MonoBehaviour
     
     private void PlayerMovement()
     {
-        if (command.moveDir.x != 0) {
-            var scale = transform.localScale;
-            scale.x = command.moveDir.x > 0? 1 : -1;
-            transform.localScale = scale;
-        }
-        if (!physicsCheck.isGround)
-        {
-            _currentSpeed = jumpMoveSpeed;
-        }
-
         playerRigidBody.linearVelocityX = command.moveDir.x * _currentSpeed;
     }
     
@@ -104,10 +93,15 @@ public class PlayerController : MonoBehaviour
     private void MoveSpeedCalculate()
     {
         // 确定目标速度
-        _currentSpeed = Mathf.Abs(command.moveDir.x) > 0.1f ? 
-            Mathf.MoveTowards(_currentSpeed, maxRunSpeed, _accelerationRate * Time.deltaTime) : 
-            Mathf.MoveTowards(_currentSpeed, 0, _decelerationRate * Time.deltaTime);
+        if (Mathf.Abs(command.moveDir.x) > 0.1f)
+        {
+            _currentSpeed = Mathf.MoveTowards(_currentSpeed, maxRunSpeed, _accelerationRate * Time.deltaTime);
+        } else
+        {
+            _currentSpeed = Mathf.MoveTowards(_currentSpeed, 0, _decelerationRate * Time.deltaTime);
+        }
     }
+    
     
     /// <summary>
     /// 土狼时间计算
@@ -117,7 +111,8 @@ public class PlayerController : MonoBehaviour
         if (physicsCheck.isGround)
         {
             _coyoteTimeCounter = coyoteTime;
-        } else if (_coyoteTimeCounter > 0)
+        }
+        if (_coyoteTimeCounter > 0)
         {
             _coyoteTimeCounter -= Time.deltaTime;
         }
@@ -144,11 +139,5 @@ public class PlayerController : MonoBehaviour
         }
         // 下落时更强的重力
         playerRigidBody.gravityScale = playerRigidBody.linearVelocity.y < 0 ? fallGravityScale : baseGravityScale;
-    }
-    
-
-    public float GetCurrentSpeed()
-    {
-        return _currentSpeed;
     }
 }

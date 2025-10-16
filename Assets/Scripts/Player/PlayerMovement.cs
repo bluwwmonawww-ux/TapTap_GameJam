@@ -7,16 +7,16 @@ using UnityEngine.UIElements;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("移动参数")]
-    [SerializeField] private float moveSpeed ;
-    [SerializeField] private float acceleration = 10f;
-    [SerializeField] private float deceleration = 8f;
+    [SerializeField] private float Acceleration ;
+    //[SerializeField] private float acceleration = 10f;
     [SerializeField] private float maxSpeed ;
 
     [Header("跳跃参数")]
     [SerializeField] private float jumpForce ;
     [SerializeField] private float groundCheckDistance = 0.1f;
     [SerializeField] private LayerMask groundLayer = 1; // 默认层
-
+    [Header("空中控制力是否减半")]
+    [SerializeField] private bool HalfForce;
     [Header("物理参数")]
     [SerializeField] private float friction = 0.2f;
     [SerializeField] private bool usePhysics = true;
@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform graphics;
 
+    
     [Header("输入设置")]
     [SerializeField] private InputAction playerInput;
     [SerializeField] private InputActionReference moveAction;
@@ -48,6 +49,8 @@ public class PlayerMovement : MonoBehaviour
     public  bool isGrounded;
     private bool jumpPressed;
     [SerializeField] public  bool InverseAD;
+    private Vector2 PlatformVelocity;
+    private Vector2 LastFPlatformVelocity;
     void Start()
     {
         originalPlayerRotation = Quaternion.Euler(0, 0, 0);
@@ -80,8 +83,8 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        
 
+        PlatformVelocity = Vector2.zero;
         CheckGrounded();
         if (Force != Vector2.zero && rb != null)
         {
@@ -91,6 +94,7 @@ public class PlayerMovement : MonoBehaviour
         // 处理跳跃
         if (jumpPressed && isGrounded)
         {
+            Debug.Log("jumpPressedjumpPressedjumpPressedjumpPressed");
             Jump();
             jumpPressed = false;
         }
@@ -99,6 +103,7 @@ public class PlayerMovement : MonoBehaviour
         {
             MoveWithPhysics();
         }
+        LastFPlatformVelocity = PlatformVelocity;
     }
 
     // 设置输入动作
@@ -132,9 +137,14 @@ public class PlayerMovement : MonoBehaviour
             }
 
             float jumpValue = jumpAction.action.ReadValue<float>();
+            Debug.Log("jumpValue" + jumpValue);
             if (jumpValue > 0.5f && !jumpPressed)
             {
                 jumpPressed = true;
+            }
+            else
+            {
+                jumpPressed = false ;
             }
         }
         else
@@ -162,8 +172,15 @@ public class PlayerMovement : MonoBehaviour
 
                 if (hit.collider.CompareTag("Ground"))
                 {
+
                     foundGround = true;
-                    break; // 找到地面就退出循环
+                    if (hit.collider.TryGetComponent<MovePlatform>(out MovePlatform moveplatform))
+                    {
+                        rb.linearVelocity -= LastFPlatformVelocity;
+                        rb.linearVelocity += (Vector2)moveplatform.CalculateMoveSpeed();
+                        PlatformVelocity = (Vector2)moveplatform.CalculateMoveSpeed();
+                    }
+                    break; 
                 }
             }
         }
@@ -204,22 +221,32 @@ public class PlayerMovement : MonoBehaviour
 
     void MoveWithPhysics()
     {
-        
+
         //Vector3 localMove = transform.right * moveInput.x * moveSpeed;             // 基于玩家的局部坐标系计算移动方向
-        Vector3 localMove =new Vector3(1,0,0)* moveInput.x * moveSpeed;                             // 不基于玩家的局部坐标系计算移动方向
+        Vector3 localMove = new Vector3(1, 0, 0) * moveInput.x * Acceleration;                             // 不基于玩家的局部坐标系计算移动方向
         // 计算目标速度与实际速度的差异
         Vector2 currentVelocity = rb.linearVelocity;
         Vector2 velocityDifference = new Vector2(localMove.x, 0) - new Vector2(currentVelocity.x, 0);
 
         // 根据速度差异计算需要施加的力
         // 使用加速度参数来控制力的强度
-        //Vector2 forceToApply = velocityDifference * acceleration;
-        Vector2 forceToApply = new Vector2(localMove.x, 0) ;
+
+
+        //forceToApply = velocityDifference * acceleration;
+        
+        Vector2 forceToApply=forceToApply = new Vector2(localMove.x, 0);
+        
         //float maxForce = moveSpeed * acceleration;
         //if (forceToApply.magnitude > maxForce)
         //{
         //    forceToApply = forceToApply.normalized * maxForce;
         //}
+
+        float forceMultiplier = isGrounded ? 1f : 0.5f; // 空中控制力减半
+        if (HalfForce)
+        {
+            forceToApply *= forceMultiplier;
+        }
         rb.AddForce(forceToApply, ForceMode2D.Force);
 
         if (Mathf.Abs(moveInput.x) < 0.1f && isGrounded)
@@ -228,16 +255,17 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(frictionForce, ForceMode2D.Force);
         }
 
-        if (Mathf.Abs(rb.linearVelocity.x) > maxSpeed)
+        if (Mathf.Abs(rb.linearVelocity.x-PlatformVelocity.x) > maxSpeed)
         {
-            rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed - PlatformVelocity.x, rb.linearVelocity.y);
+            //Debug.Log("rb.linearVelocity " + rb.linearVelocity);
         }
     }
 
     //void MoveWithPhysics()
     //{
     //    // 基于玩家的局部坐标系计算移动方向
-    //    Vector3 localMove = transform.right * moveInput.x * moveSpeed;
+    //    Vector3 localMove = new Vector3(1, 0, 0) * moveInput.x * moveSpeed;
 
     //    // 计算目标速度与实际速度的差异
     //    Vector2 currentVelocity = rb.linearVelocity;
@@ -275,7 +303,6 @@ public class PlayerMovement : MonoBehaviour
     //    }
     //}
 
-    // 翻转角色朝向
     void FlipCharacter()
     {
         if (moveInput.x > 0 && !isFacingRight)
