@@ -22,6 +22,7 @@ public class ItemMagnet : MonoBehaviour
             if (Vector2.Distance(transform.position, player.position) < 0.2f)
             {
                 player.GetComponent<ItemCollector>()?.CollectItem(gameObject);
+                attract = false;
             }
         }
     }
