@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -22,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("空中控制力是否减半")]
     [SerializeField] private bool HalfForce;
     [Header("物理参数")]
-    [SerializeField] private float friction = 0.2f;
+    //[SerializeField] private float friction = 0.2f;
     [SerializeField] private bool usePhysics = true;
     [SerializeField] public float Gravity = 98f;
     [Header("组件引用")]
@@ -293,8 +294,9 @@ public class PlayerMovement : MonoBehaviour
 
         if (Mathf.Abs(moveInput.x) < 0.1f && isGrounded)
         {
-            Vector2 frictionForce = -new Vector2(currentVelocity.x, 0) * friction;
-            rb.AddForce(frictionForce, ForceMode2D.Force);
+            //    Vector2 frictionForce = -new Vector2(currentVelocity.x, 0) * friction;
+            //    rb.AddForce(frictionForce, ForceMode2D.Force);
+            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, PlatformVelocity, 0.2f);
         }
 
         if (Mathf.Abs(rb.linearVelocity.x-PlatformVelocity.x) > maxSpeed && !Unforced)
