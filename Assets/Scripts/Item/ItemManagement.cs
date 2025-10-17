@@ -6,7 +6,12 @@ public class ItemMagnet : MonoBehaviour
     public float attractSpeed = 5f;    
     private Transform player;
     private bool attract = false;
+    private Vector3 initialPosition;
 
+    void Start()
+    {
+        initialPosition = transform.position;
+    }
     void Update()
     {
         if (player != null && attract)
@@ -35,5 +40,11 @@ public class ItemMagnet : MonoBehaviour
             player = other.transform;
             attract = true;
         }
+    }
+    public void ResetItem()
+    {
+        transform.position = initialPosition;
+        attract = false;
+        player = null;
     }
 }
