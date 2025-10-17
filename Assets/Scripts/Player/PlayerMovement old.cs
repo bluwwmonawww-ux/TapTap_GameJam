@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovementOld : MonoBehaviour
 {
     [Header("移动参数")]
     [SerializeField] private float Acceleration ;
@@ -15,16 +15,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce ;
     [SerializeField] private float groundCheckDistance = 0.1f;
     [SerializeField] private LayerMask groundLayer = 1; // 默认层
-    [Header("冲刺参数")]
-    [SerializeField]private float RushDuration=0.15f;
-    [SerializeField] private float RushDistance = 5;
-    [SerializeField] private float RushCD;
     [Header("空中控制力是否减半")]
     [SerializeField] private bool HalfForce;
     [Header("物理参数")]
     [SerializeField] private float friction = 0.2f;
     [SerializeField] private bool usePhysics = true;
-    [SerializeField] public float Gravity = 98f;
+    [SerializeField] private float Gravity =10f;
     [Header("组件引用")]
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform graphics;
@@ -34,7 +30,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private InputAction playerInput;
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference jumpAction;
-    [SerializeField] private InputActionReference ShiftAction;
 
     // 内部变量
     private Vector2 moveInput;
@@ -56,12 +51,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public  bool InverseAD;
     private Vector2 PlatformVelocity;
     private Vector2 LastFPlatformVelocity;
-    [SerializeField] private int RushTime;
-    private bool Rush;
-    private bool Unforced;
     void Start()
     {
-        RushTime = 1;
         originalPlayerRotation = Quaternion.Euler(0, 0, 0);
 
         // 自动获取组件
@@ -95,7 +86,10 @@ public class PlayerMovement : MonoBehaviour
 
         PlatformVelocity = Vector2.zero;
         CheckGrounded();
-        
+        if (Force != Vector2.zero && rb != null)
+        {
+            rb.AddForce(Force);
+        }
 
         // 处理跳跃
         if (jumpPressed && isGrounded)
@@ -104,28 +98,12 @@ public class PlayerMovement : MonoBehaviour
             Jump();
             jumpPressed = false;
         }
+
         if (usePhysics && rb != null)
         {
             MoveWithPhysics();
         }
-        if (Rush && RushCD<=0) {
-            Debug.Log("Rush"+ moveInput);
-            StartCoroutine(RUSH(moveInput));
-            Rush = false;
-            RushTime = 0;
-            RushCD = 0.2f;
-        }else if (RushCD > 0)
-        {
-            RushCD-=Time.deltaTime;
-        }
-
-        
         LastFPlatformVelocity = PlatformVelocity;
-        if ( !Unforced)
-        {
-            rb.AddForce(Force);
-            rb.AddForce(new Vector2(0,- Gravity));
-        }
     }
 
     // 设置输入动作
@@ -143,10 +121,6 @@ public class PlayerMovement : MonoBehaviour
         {
             moveAction.action.Enable();
         }
-        if (ShiftAction != null)
-        {
-            ShiftAction.action.Enable();
-        }
     }
 
     // 获取输入
@@ -163,7 +137,6 @@ public class PlayerMovement : MonoBehaviour
             }
 
             float jumpValue = jumpAction.action.ReadValue<float>();
-            
             if (jumpValue > 0.5f && !jumpPressed)
             {
                 jumpPressed = true;
@@ -172,22 +145,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 jumpPressed = false ;
             }
-            float shiftvalue =ShiftAction.action.ReadValue<float>();
-            
-            if (shiftvalue>0 && RushTime>0)
-            {
-                Debug.Log(shiftvalue);
-                Rush = true;
-                
-            }
-            else
-            {
-                    Rush = false;
-            }
         }
         else
         {
-                Rush = false;
             moveInput = Vector2.zero;
             jumpPressed = false;
         }
@@ -213,9 +173,6 @@ public class PlayerMovement : MonoBehaviour
                 {
 
                     foundGround = true;
-                    if (RushTime == 0) {
-                        RushTime = 1;
-                    }
                     if (hit.collider.TryGetComponent<MovePlatform>(out MovePlatform moveplatform))
                     {
                         rb.linearVelocity -= LastFPlatformVelocity;
@@ -297,15 +254,10 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(frictionForce, ForceMode2D.Force);
         }
 
-        if (Mathf.Abs(rb.linearVelocity.x-PlatformVelocity.x) > maxSpeed && !Unforced)
+        if (Mathf.Abs(rb.linearVelocity.x-PlatformVelocity.x) > maxSpeed)
         {
             rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed - PlatformVelocity.x, rb.linearVelocity.y);
             //Debug.Log("rb.linearVelocity " + rb.linearVelocity);
-        }
-        if (rb.linearVelocity.y>0 && Mathf.Abs(rb.linearVelocity.y - PlatformVelocity.y) > maxSpeed*2f && !Unforced)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Sign(rb.linearVelocity.y) * maxSpeed*2f - PlatformVelocity.y);
-            Debug.Log("rb.linearVelocity " + rb.linearVelocity);
         }
     }
 
@@ -445,7 +397,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void RestorePlayerRotation(float RotationDuration)
     {
-        Gravity = 98f;
+        Gravity = 10f;
     }
 
     public IEnumerator SmoothRestoreRotation(float duration)
@@ -499,22 +451,5 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(SmoothRestoreRotation(0.1f));
             }
         }
-    }
-    public IEnumerator RUSH(Vector2 MoveInput)
-    {
-        Vector2 Dirction=moveInput.normalized;
-        float time = 0;
-        while (time< RushDuration)
-        {
-            rb.linearVelocity = Dirction * RushDistance / RushDuration;//Dirction * RushDistance / 0.2f;
-            InhibitInput =true;
-            Unforced=true;
-            //transform.position +=(Vector3) Dirction * RushDistance / 0.2f*Time.deltaTime;
-            //rb.AddForce(Dirction * RushDistance*100f);
-            time += Time.deltaTime;
-            yield return null;
-        }
-        Unforced=false;
-        InhibitInput=false;
     }
 }
