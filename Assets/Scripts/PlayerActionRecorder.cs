@@ -62,15 +62,16 @@ public class PlayerActionRecorder : MonoBehaviour
             Vector3 currentPos = transform.position;
             Quaternion currentRot = transform.rotation;
             Vector2 currentMoveDir = playerCommand.moveDir;
+
             bool currentGrounded = physicsCheck.isGround;
             float currentSpeed = playerController.CurrentSpeed;
             bool currentJumping = playerRigidBody.linearVelocity.y > 0.1f;
             Vector2 currentVelocity = playerRigidBody.linearVelocity;
             PlayerActionFrame frame = new PlayerActionFrame(
-                Time.time, currentPos, currentRot, currentMoveDir, 
+                Time.time, currentPos, currentRot, currentMoveDir,
                 currentGrounded, currentSpeed, currentJumping, currentVelocity
             );
-            
+
             actionHistory.Enqueue(frame);
             lastRecordTime = Time.time;
         }
