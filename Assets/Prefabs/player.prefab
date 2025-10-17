@@ -200,7 +200,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0
-  m_GravityScale: 10
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -210,7 +210,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &2373764504774436422
 BoxCollider2D:
@@ -277,8 +277,13 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
+  RushDuration: 0.15
+  RushDistance: 10
+  RushCD: 0
+  HalfForce: 0
   friction: 3
   usePhysics: 1
+  Gravity: 98
   rb: {fileID: 5473101808532367168}
   graphics: {fileID: 0}
   playerInput:
@@ -292,6 +297,7 @@ MonoBehaviour:
     m_Flags: 0
   moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  ShiftAction: {fileID: -7059976402764229863, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   originalPlayerRotation: {x: 0, y: 0, z: 0, w: 1}
   InhibitInput: 0
   Force: {x: 0, y: 0}
@@ -301,6 +307,7 @@ MonoBehaviour:
   RestoringRotation: 0
   isGrounded: 1
   InverseAD: 0
+  RushTime: 0
 --- !u!114 &7841285160479865924
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -34,6 +34,8 @@ public class PlayerStatus : MonoBehaviour
         //GameObject Newplayer = GameObject.Instantiate(NewPlayer);
         //Newplayer.transform.position = new Vector2(4.05f, 5.8852f);
         gameObject.transform.position = GameObject.FindGameObjectWithTag("Save").transform.position;
+        gameObject.GetComponent<PlayerMovement>().Force=Vector2.zero;
+        gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         Health = 100;
 
     }
