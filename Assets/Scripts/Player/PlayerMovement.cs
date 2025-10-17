@@ -292,7 +292,7 @@ public class PlayerMovement : MonoBehaviour
         }
         rb.AddForce(forceToApply, ForceMode2D.Force);
 
-        if (Mathf.Abs(moveInput.x) < 0.1f && isGrounded)
+        if (Mathf.Abs(moveInput.x) < 0.1f && isGrounded && !Unforced)
         {
             //    Vector2 frictionForce = -new Vector2(currentVelocity.x, 0) * friction;
             //    rb.AddForce(frictionForce, ForceMode2D.Force);
@@ -304,11 +304,11 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed - PlatformVelocity.x, rb.linearVelocity.y);
             //Debug.Log("rb.linearVelocity " + rb.linearVelocity);
         }
-        if (rb.linearVelocity.y>0 && Mathf.Abs(rb.linearVelocity.y - PlatformVelocity.y) > maxSpeed*2f && !Unforced)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Sign(rb.linearVelocity.y) * maxSpeed*2f - PlatformVelocity.y);
-            Debug.Log("rb.linearVelocity " + rb.linearVelocity);
-        }
+        //if (rb.linearVelocity.y > 0 && Mathf.Abs(rb.linearVelocity.y - PlatformVelocity.y) > maxSpeed * 2f && !Unforced)
+        //{
+        //    rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Sign(rb.linearVelocity.y) * maxSpeed * 2f - PlatformVelocity.y);
+        //    Debug.Log("rb.linearVelocity " + rb.linearVelocity);
+        //}
     }
 
     //void MoveWithPhysics()
@@ -516,6 +516,7 @@ public class PlayerMovement : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+        rb.linearVelocity *= 0.2f;
         Unforced=false;
         InhibitInput=false;
     }
