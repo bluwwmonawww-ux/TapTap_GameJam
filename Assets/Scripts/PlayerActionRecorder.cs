@@ -142,5 +142,13 @@ public class PlayerActionRecorder : MonoBehaviour
             Debug.Log("已读取玩家状态");
         }
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Born"))
+        {
+            Save();
+        }
+    }
+
 }
 

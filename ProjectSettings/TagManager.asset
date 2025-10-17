@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Save
+  - Born
   layers:
   - Default
   - TransparentFX
