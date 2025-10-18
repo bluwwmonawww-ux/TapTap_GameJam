@@ -272,7 +272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   Acceleration: 150
   maxSpeed: 15
-  jumpForce: 30
+  jumpForce: 40
   groundCheckDistance: 0.1
   groundLayer:
     serializedVersion: 2
@@ -281,7 +281,6 @@ MonoBehaviour:
   RushDistance: 10
   RushCD: 0
   HalfForce: 0
-  friction: 3
   usePhysics: 1
   Gravity: 98
   rb: {fileID: 5473101808532367168}
