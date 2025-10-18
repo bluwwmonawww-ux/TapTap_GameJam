@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class PlayerActionFrame
@@ -13,8 +14,10 @@ public class PlayerActionFrame
     public float currentSpeed;
     public bool isJumping;
     public Vector2 velocity;
-    
-    public PlayerActionFrame(float time, Vector3 pos, Quaternion rot, Vector2 move, bool ground, float speed, bool jump, Vector2 vel)
+
+    public string sceneName;
+
+    public PlayerActionFrame(float time, Vector3 pos, Quaternion rot, Vector2 move, bool ground, float speed, bool jump, Vector2 vel, string scene)
     {
         timestamp = time;
         position = pos;
@@ -24,6 +27,7 @@ public class PlayerActionFrame
         currentSpeed = speed;
         isJumping = jump;
         velocity = vel;
+        sceneName = scene;
     }
 }
 
@@ -62,15 +66,17 @@ public class PlayerActionRecorder : MonoBehaviour
             Vector3 currentPos = transform.position;
             Quaternion currentRot = transform.rotation;
             Vector2 currentMoveDir = playerCommand.moveDir;
+
             bool currentGrounded = physicsCheck.isGround;
             float currentSpeed = playerController.CurrentSpeed;
             bool currentJumping = playerRigidBody.linearVelocity.y > 0.1f;
             Vector2 currentVelocity = playerRigidBody.linearVelocity;
+            string currentScene = SceneManager.GetActiveScene().name;
             PlayerActionFrame frame = new PlayerActionFrame(
-                Time.time, currentPos, currentRot, currentMoveDir, 
-                currentGrounded, currentSpeed, currentJumping, currentVelocity
+                Time.time, currentPos, currentRot, currentMoveDir,
+                currentGrounded, currentSpeed, currentJumping, currentVelocity, currentScene
             );
-            
+
             actionHistory.Enqueue(frame);
             lastRecordTime = Time.time;
         }
