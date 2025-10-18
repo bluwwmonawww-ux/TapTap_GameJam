@@ -33,6 +33,8 @@ public class PlayerActionFrame
 
 public class PlayerActionRecorder : MonoBehaviour
 {
+    public static PlayerActionRecorder Instance { get; private set; }
+
     [Header("记录设置")]
     [SerializeField] private float recordDuration = 2f; // 记录2秒的数据
     [SerializeField] private float recordInterval = 0.02f;
@@ -128,6 +130,18 @@ public class PlayerActionRecorder : MonoBehaviour
             }
             SaveSystemTutorial.SaveSystem.SaveByJson(PLAYER_DATA_FILE_NAME, lastFrame);
             Debug.Log("已保存玩家状态");
+        }
+    }
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
     public void Load()
