@@ -54,6 +54,8 @@ public class PlayerStatus : MonoBehaviour
 
         Timingtext.text = "5";
         gameObject.GetComponent<PlayerMovement>().InhibitInput = true;
+
+
         while (i >0)
         {
             
@@ -64,6 +66,8 @@ public class PlayerStatus : MonoBehaviour
             yield return null;
 
         }
+
+
         Timingtext.text = "";
         PlayerRespawn();
         gameObject.GetComponent<PlayerMovement>().InhibitInput = false;

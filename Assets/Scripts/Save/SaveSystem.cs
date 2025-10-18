@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+[System.Serializable]
+public class PlayerSaveData
+{
+    public Vector3 position;
+}
+
 namespace SaveSystemTutorial
 {
     public static class SaveSystem
@@ -34,5 +40,17 @@ namespace SaveSystemTutorial
             var path = Path.Combine(Application.persistentDataPath, saveFileName);
             
         }
+        public static void SavePlayerPosition(string saveFileName, Vector3 position)
+        {
+            var data = new PlayerSaveData { position = position };
+            SaveByJson(saveFileName, data);
+        }
+
+        public static Vector3 LoadPlayerPosition(string saveFileName)
+        {
+            var data = LoadFromJson<PlayerSaveData>(saveFileName);
+            return data != null ? data.position : Vector3.zero;
+        }
+
     }
 }
