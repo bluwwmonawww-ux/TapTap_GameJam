@@ -96,8 +96,11 @@ public class PlayerMovement : MonoBehaviour
 
         PlatformVelocity = Vector2.zero;
         CheckGrounded();
-        
 
+        if (usePhysics && rb != null)
+        {
+            MoveWithPhysics();
+        }
         // 处理跳跃
         if (jumpPressed && isGrounded)
         {
@@ -105,10 +108,7 @@ public class PlayerMovement : MonoBehaviour
             Jump();
             jumpPressed = false;
         }
-        if (usePhysics && rb != null)
-        {
-            MoveWithPhysics();
-        }
+        
         if (Rush && RushCD<=0) {
             Debug.Log("Rush"+ moveInput);
             StartCoroutine(RUSH(moveInput));
@@ -247,7 +247,6 @@ public class PlayerMovement : MonoBehaviour
             //gameObject.GetComponent<HeightTrackMono>().StartJumpTracking();
             Vector2 jumpDirection = transform.up * jumpForce;
 
-            // 应用跳跃力
             rb.AddForce(jumpDirection, ForceMode2D.Impulse);
 
             // 触发跳跃动画（如果有）
@@ -259,7 +258,6 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log($"跳跃！方向: {jumpDirection}, 玩家旋转: {transform.eulerAngles.z}");
         }
     }
-    // 使用物理系统移动
 
 
     void MoveWithPhysics()
@@ -292,11 +290,10 @@ public class PlayerMovement : MonoBehaviour
         }
         rb.AddForce(forceToApply, ForceMode2D.Force);
 
-        if (Mathf.Abs(moveInput.x) < 0.1f && isGrounded && !Unforced)
+        if (Mathf.Abs(moveInput.x) < 0.1f && !jumpPressed && isGrounded && !Unforced)
         {
-            //    Vector2 frictionForce = -new Vector2(currentVelocity.x, 0) * friction;
-            //    rb.AddForce(frictionForce, ForceMode2D.Force);
-            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, PlatformVelocity, 0.2f);
+            
+            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, PlatformVelocity, 1f);
         }
 
         if (Mathf.Abs(rb.linearVelocity.x-PlatformVelocity.x) > maxSpeed && !Unforced)
