@@ -40,7 +40,7 @@ public class PlayerActionRecorder : MonoBehaviour
     [SerializeField] private float recordInterval = 0.02f;
     const string PLAYER_DATA_FILE_NAME = "PlayerData";
     private Queue<PlayerActionFrame> actionHistory = new Queue<PlayerActionFrame>();
-    private PlayerController playerController;
+    private PlayerMovement playerMovement;
     private PhysicCheck physicsCheck;
     private PlayerCommand playerCommand;
     private Rigidbody2D playerRigidBody;
@@ -49,7 +49,7 @@ public class PlayerActionRecorder : MonoBehaviour
     
     void Start()
     {
-        playerController = GetComponent<PlayerController>();
+        playerMovement = GetComponent<PlayerMovement>();
         physicsCheck = GetComponent<PhysicCheck>();
         playerCommand = GetComponent<PlayerCommand>();
         playerRigidBody = GetComponent<Rigidbody2D>();
@@ -70,7 +70,7 @@ public class PlayerActionRecorder : MonoBehaviour
             Vector2 currentMoveDir = playerCommand.moveDir;
 
             bool currentGrounded = physicsCheck.isGround;
-            float currentSpeed = playerController.CurrentSpeed;
+            float currentSpeed = playerMovement.GetCurrentSpeed();
             bool currentJumping = playerRigidBody.linearVelocity.y > 0.1f;
             Vector2 currentVelocity = playerRigidBody.linearVelocity;
             string currentScene = SceneManager.GetActiveScene().name;
@@ -149,11 +149,21 @@ public class PlayerActionRecorder : MonoBehaviour
         var saveData = SaveSystemTutorial.SaveSystem.LoadFromJson<PlayerActionFrame>(PLAYER_DATA_FILE_NAME);
         if (saveData != null)
         {
-
             transform.position = saveData.position;
             transform.rotation = saveData.rotation;
+            
+            // 重置速度，避免继续下坠
+            if (playerRigidBody != null)
+            {
+                playerRigidBody.linearVelocity = Vector2.zero;
+                playerRigidBody.angularVelocity = 0f;
+            }
 
-            Debug.Log("已读取玩家状态");
+            Debug.Log($"已读取玩家状态，位置: {saveData.position}");
+        }
+        else
+        {
+            Debug.LogWarning("没有找到保存的玩家数据!");
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
