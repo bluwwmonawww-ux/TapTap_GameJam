@@ -11,6 +11,9 @@ public class SceneEndTrigger : MonoBehaviour
     [Header("淡入淡出设置")]
     public float fadeDuration = 1f; // 淡化时长
     
+    [Header("Bug隐藏设置")]
+    public float bugHideDuration = 1f; // Bug 隐藏时长
+    
     private GameObject cachedPlayer;
     private int frameCount = 0;
     private CanvasGroup fadeCanvasGroup;
@@ -40,6 +43,12 @@ public class SceneEndTrigger : MonoBehaviour
 
     private IEnumerator FadeOutAndLoadScene()
     {
+        // 禁用玩家控制
+        DisablePlayerControl();
+        
+        // 隐藏 Bug 标签的对象
+        yield return StartCoroutine(HideBugObjects(bugHideDuration));
+        
         // 创建或获取淡化画布
         fadeCanvasGroup = CreateFadeCanvas();
         
@@ -48,6 +57,99 @@ public class SceneEndTrigger : MonoBehaviour
         
         // 加载新场景
         SceneManager.LoadScene(targetSceneName);
+    }
+
+    private void DisablePlayerControl()
+    {
+        if (cachedPlayer != null)
+        {
+            var playerMovement = cachedPlayer.GetComponent<PlayerMovement>();
+            if (playerMovement != null)
+            {
+                playerMovement.InhibitInput = true;
+                Debug.Log("玩家控制已禁用");
+            }
+        }
+    }
+
+    private IEnumerator HideBugObjects(float duration)
+    {
+        Debug.Log("开始隐藏 Bug 对象");
+        
+        // 获取所有 Bug 标签的对象
+        GameObject[] bugObjects = GameObject.FindGameObjectsWithTag("Bug");
+        
+        if (bugObjects.Length == 0)
+        {
+            Debug.LogWarning("场景中没有找到 Bug 标签的对象");
+            yield break;
+        }
+        
+        Debug.Log($"找到 {bugObjects.Length} 个 Bug 对象，开始隐藏");
+        
+        float elapsed = 0f;
+        
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Clamp01(1f - (elapsed / duration)); // 从 1 逐渐减到 0
+            
+            foreach (var bugObject in bugObjects)
+            {
+                if (bugObject == null) continue;
+                
+                // 设置 SpriteRenderer 的透明度
+                var spriteRenderer = bugObject.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    Color color = spriteRenderer.color;
+                    color.a = alpha;
+                    spriteRenderer.color = color;
+                }
+                
+                // 如果有子物体，也设置其透明度
+                foreach (Transform child in bugObject.transform)
+                {
+                    var childSpriteRenderer = child.GetComponent<SpriteRenderer>();
+                    if (childSpriteRenderer != null)
+                    {
+                        Color color = childSpriteRenderer.color;
+                        color.a = alpha;
+                        childSpriteRenderer.color = color;
+                    }
+                }
+            }
+            
+            Debug.Log($"Bug 隐藏中... alpha: {alpha}");
+            yield return null;
+        }
+        
+        // 确保完全隐藏
+        foreach (var bugObject in bugObjects)
+        {
+            if (bugObject == null) continue;
+            
+            var spriteRenderer = bugObject.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                Color color = spriteRenderer.color;
+                color.a = 0f;
+                spriteRenderer.color = color;
+            }
+            
+            foreach (Transform child in bugObject.transform)
+            {
+                var childSpriteRenderer = child.GetComponent<SpriteRenderer>();
+                if (childSpriteRenderer != null)
+                {
+                    Color color = childSpriteRenderer.color;
+                    color.a = 0f;
+                    childSpriteRenderer.color = color;
+                }
+            }
+        }
+        
+        Debug.Log("Bug 对象已完全隐藏");
     }
 
     private CanvasGroup CreateFadeCanvas()
@@ -180,6 +282,9 @@ public class SceneEndTrigger : MonoBehaviour
             Debug.LogWarning($"无法找到 Start 点或玩家对象! startPoint: {startPoint}, cachedPlayer: {cachedPlayer}");
         }
         
+        // 重新启用玩家控制
+        EnablePlayerControl();
+        
         // 开始淡入效果
         Debug.Log($"fadeCanvasGroup: {fadeCanvasGroup}, fadeCanvasGroup is null: {fadeCanvasGroup == null}");
         if (fadeCanvasGroup != null)
@@ -191,6 +296,19 @@ public class SceneEndTrigger : MonoBehaviour
         {
             Debug.LogWarning("fadeCanvasGroup 为 null，无法执行淡入效果");
             Destroy(gameObject);
+        }
+    }
+
+    private void EnablePlayerControl()
+    {
+        if (cachedPlayer != null)
+        {
+            var playerMovement = cachedPlayer.GetComponent<PlayerMovement>();
+            if (playerMovement != null)
+            {
+                playerMovement.InhibitInput = false;
+                Debug.Log("玩家控制已恢复");
+            }
         }
     }
 

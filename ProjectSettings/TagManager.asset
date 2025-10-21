@@ -10,6 +10,7 @@ TagManager:
   - End
   - Start
   - Item
+  - Bug
   layers:
   - Default
   - TransparentFX
