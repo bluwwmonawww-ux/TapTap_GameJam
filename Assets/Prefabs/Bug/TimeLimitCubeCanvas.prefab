@@ -115,6 +115,7 @@ GameObject:
   - component: {fileID: 1229861844895628772}
   - component: {fileID: 2804357442635977232}
   - component: {fileID: 8990998833327379436}
+  - component: {fileID: 6030648124469082589}
   m_Layer: 0
   m_Name: TimeLimitCube
   m_TagString: Ground
@@ -252,3 +253,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &6030648124469082589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7818136232371936296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4376fdd773898634caea5a761905e43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClimableWall
