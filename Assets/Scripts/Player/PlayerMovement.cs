@@ -16,6 +16,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce ;
     [SerializeField] private float groundCheckDistance = 0.1f;
     [SerializeField] private LayerMask groundLayer = 1; // 默认层
+    
+    [Header("爬墙参数")]
+    [SerializeField] private float wallCheckDistance = 0.5f;
+    [SerializeField] private LayerMask wallLayer = 1; // 墙壁层
+    [SerializeField] private float wallSlideSpeed = 2f; // 墙壁下滑速度
+    [SerializeField] private float wallJumpForce = 10f; // 墙壁跳跃力度
+    [SerializeField] private float wallStickForce = 5f; // 墙壁吸附力度
+    [SerializeField] private float maxWallClimbSpeed = 3f; // 爬墙时最大垂直速度
     [Header("冲刺参数")]
     [SerializeField]private float RushDuration=0.15f;
     [SerializeField] private float RushDistance = 5;
@@ -26,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
     //[SerializeField] private float friction = 0.2f;
     [SerializeField] private bool usePhysics = true;
     [SerializeField] public float Gravity = 98f;
+    [SerializeField] public float FrictionPRESET=1f;
+    [SerializeField] public float Friction=1f;
     [Header("组件引用")]
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform graphics;
@@ -53,8 +63,19 @@ public class PlayerMovement : MonoBehaviour
     public bool FlipingPlayer;
     public bool RestoringRotation;
     public  bool isGrounded;
-    private bool jumpPressed;
+    [SerializeField] private bool jumpPressed;
+     [SerializeField]private bool jumpPressedLastFrame; // 跟踪上一帧的跳跃输入状态
     [SerializeField] public  bool InverseAD;
+    
+    // 爬墙相关变量***********************
+    public bool isWallSliding;
+    public bool isWallClimbing;
+    private bool isTouchingLeftWall;
+    private bool isTouchingRightWall;
+    private bool wallJumping;
+    private float wallJumpTimer;
+
+   // 爬墙相关变量*****************************
     private Vector2 PlatformVelocity;
     private Vector2 LastFPlatformVelocity;
     [SerializeField] private int RushTime;
@@ -64,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
     {
         RushTime = 1;
         originalPlayerRotation = Quaternion.Euler(0, 0, 0);
-
+        
         // 自动获取组件
         rigidbody2D = GetComponent<Rigidbody2D>();
         if (rb == null)
@@ -84,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         CheckRotation();
-        GetInput();
+        
         
         HandleAnimation();
         FlipCharacter();
@@ -93,22 +114,26 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-
+        GetInput();
         PlatformVelocity = Vector2.zero;
         CheckGrounded();
-        
+        CheckWalls();
 
-        // 处理跳跃
-        if (jumpPressed && isGrounded)
+        if (usePhysics && rb != null)
+        {
+            MoveWithPhysics();
+        }
+        if(jumpPressed){
+
+            Debug.Log("isgrounded"+isGrounded);
+        }
+        if (jumpPressed && (isGrounded || isWallSliding))
         {
             Debug.Log("jumpPressedjumpPressedjumpPressedjumpPressed");
             Jump();
             jumpPressed = false;
         }
-        if (usePhysics && rb != null)
-        {
-            MoveWithPhysics();
-        }
+        
         if (Rush && RushCD<=0) {
             Debug.Log("Rush"+ moveInput);
             StartCoroutine(RUSH(moveInput));
@@ -165,14 +190,24 @@ public class PlayerMovement : MonoBehaviour
 
             float jumpValue = jumpAction.action.ReadValue<float>();
             
-            if (jumpValue > 0.5f && !jumpPressed)
+            // 真正的按下触发逻辑（类似GetKeyDown）
+            bool jumpInputThisFrame = jumpValue > 0.5f;
+            if (jumpInputThisFrame){
+            Debug.Log("jumpInputThisFrame"+jumpInputThisFrame);
+            
+            Debug.Log("jumpPressedLastFrame"+jumpPressedLastFrame);
+            }
+
+            if (jumpInputThisFrame && !jumpPressedLastFrame)
             {
-                jumpPressed = true;
+                jumpPressed = true; // 只在按下瞬间触发
             }
             else
             {
-                jumpPressed = false ;
+                jumpPressed = false;
             }
+            
+            jumpPressedLastFrame = jumpInputThisFrame; // 记录这一帧的状态
             float shiftvalue =ShiftAction.action.ReadValue<float>();
             
             if (shiftvalue>0 && RushTime>0)
@@ -238,7 +273,59 @@ public class PlayerMovement : MonoBehaviour
         //}
     }
 
+    // 检查墙壁接触
+    void CheckWalls()
+    {
+        Vector2 rayStart = (Vector2)transform.position;
+        
+        // 获取角色碰撞体的边界
+        Collider2D playerCollider = GetComponent<Collider2D>();
+        float playerWidth = playerCollider != null ? playerCollider.bounds.extents.x : 0.5f;
+        
+        // 从角色左右两边稍微延伸一点开始检测
+        Vector2 leftRayStart = rayStart - (Vector2)transform.right * (playerWidth + 0.1f);
+        Vector2 rightRayStart = rayStart + (Vector2)transform.right * (playerWidth + 0.1f);
+        
+        // 检测左侧墙壁
+        RaycastHit2D leftWallHit = Physics2D.Raycast(leftRayStart, -(Vector2)transform.right, wallCheckDistance, wallLayer);
+        isTouchingLeftWall = leftWallHit.collider != null && leftWallHit.collider.GetComponent<ClimableWall>() != null;
+        
+        // 检测右侧墙壁
+        RaycastHit2D rightWallHit = Physics2D.Raycast(rightRayStart, (Vector2)transform.right, wallCheckDistance, wallLayer);
+        isTouchingRightWall = rightWallHit.collider != null && rightWallHit.collider.GetComponent<ClimableWall>() != null;
+        
+        // 判断是否在爬墙（需要按住A或D键）
+        bool isHoldingWallInput = (isTouchingLeftWall && moveInput.x < -0.1f) || (isTouchingRightWall && moveInput.x > 0.1f);
+        isWallSliding = (isTouchingLeftWall || isTouchingRightWall) && !isGrounded && isHoldingWallInput;
+        isWallClimbing = isWallSliding && Mathf.Abs(moveInput.x) > 0.1f;
+        
+        // 爬墙时限制垂直方向最大速度
+        if (isWallSliding)
+        {
+            if (Mathf.Abs(rb.linearVelocity.y) > maxWallClimbSpeed)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Sign(rb.linearVelocity.y) * maxWallClimbSpeed);
+            }
+        }
+        
+        // 墙壁跳跃计时器
+        if (wallJumping)
+        {
+            wallJumpTimer += Time.deltaTime;
+            if (wallJumpTimer > 0.2f)
+            {
+                wallJumping = false;
+                wallJumpTimer = 0f;
+            }
+        }
+        
+        // 调试可视化
+        Debug.DrawRay(leftRayStart, -(Vector2)transform.right * wallCheckDistance, isTouchingLeftWall ? Color.green : Color.red, 0.1f);
+        Debug.DrawRay(rightRayStart, (Vector2)transform.right * wallCheckDistance, isTouchingRightWall ? Color.green : Color.red, 0.1f);
+    }
+
     // 跳跃方法
+    
     void Jump()
     {
         if (rb != null && isGrounded)
@@ -247,7 +334,6 @@ public class PlayerMovement : MonoBehaviour
             //gameObject.GetComponent<HeightTrackMono>().StartJumpTracking();
             Vector2 jumpDirection = transform.up * jumpForce;
 
-            // 应用跳跃力
             rb.AddForce(jumpDirection, ForceMode2D.Impulse);
 
             // 触发跳跃动画（如果有）
@@ -259,7 +345,6 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log($"跳跃！方向: {jumpDirection}, 玩家旋转: {transform.eulerAngles.z}");
         }
     }
-    // 使用物理系统移动
 
 
     void MoveWithPhysics()
@@ -292,11 +377,26 @@ public class PlayerMovement : MonoBehaviour
         }
         rb.AddForce(forceToApply, ForceMode2D.Force);
 
-        if (Mathf.Abs(moveInput.x) < 0.1f && isGrounded && !Unforced)
+        // 爬墙时的移动限制
+        if (isWallSliding)
         {
-            //    Vector2 frictionForce = -new Vector2(currentVelocity.x, 0) * friction;
-            //    rb.AddForce(frictionForce, ForceMode2D.Force);
-            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, PlatformVelocity, 0.2f);
+            // 爬墙时限制向墙壁方向的移动
+            if (isTouchingLeftWall && moveInput.x < -0.1f)
+            {
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                rb.AddForce(new Vector2(0,0.8f*Gravity),ForceMode2D.Force);
+            }
+            else if (isTouchingRightWall && moveInput.x > 0.1f)
+            {
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                rb.AddForce(new Vector2(0,0.8f*Gravity),ForceMode2D.Force);
+            }
+        }
+
+        if (Mathf.Abs(moveInput.x) < 0.1f && !jumpPressed && isGrounded && !Unforced)
+        {
+            
+            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, PlatformVelocity, Friction);
         }
 
         if (Mathf.Abs(rb.linearVelocity.x-PlatformVelocity.x) > maxSpeed && !Unforced)
@@ -390,6 +490,8 @@ public class PlayerMovement : MonoBehaviour
         float speed = usePhysics ? Mathf.Abs(rb.linearVelocity.x) : Mathf.Abs(currentSpeed);
         animator.SetFloat("Speed", speed);
         animator.SetBool("IsGrounded", isGrounded);
+        animator.SetBool("IsWallSliding", isWallSliding);
+        animator.SetBool("IsWallClimbing", isWallClimbing);
     }
 
     // 公共方法

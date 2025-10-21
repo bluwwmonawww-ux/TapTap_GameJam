@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8361728406289088487}
   - component: {fileID: 3786694349058085530}
   - component: {fileID: 4477480751740599649}
+  - component: {fileID: 5849218694961574653}
   m_Layer: 0
   m_Name: 'Moveplatform '
   m_TagString: Ground
@@ -166,6 +167,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5849218694961574653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4911080256026697369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4376fdd773898634caea5a761905e43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClimableWall
 --- !u!1 &8624114672832210475
 GameObject:
   m_ObjectHideFlags: 0

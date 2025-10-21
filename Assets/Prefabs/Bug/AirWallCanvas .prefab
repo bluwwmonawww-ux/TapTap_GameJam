@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2887433596844129919}
   - component: {fileID: 4166051534071156062}
   - component: {fileID: 1562712858361168924}
+  - component: {fileID: 4062076402089648360}
   m_Layer: 0
   m_Name: airwall
   m_TagString: Ground
@@ -139,6 +140,18 @@ MonoBehaviour:
   FadeInTime: 0.2
   DisplayTime: 2
   Staytime: -1
+--- !u!114 &4062076402089648360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260780258135382498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4376fdd773898634caea5a761905e43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClimableWall
 --- !u!1 &3143251241596836192
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,7 +236,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2296110090744002023
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -45,6 +45,18 @@ public class ElemenatAttribue : MonoBehaviour
 
                 }
             }
+            else if(IsIce){
+                if (other.CompareTag("Player")){
+                    Debug.Log("is ice");
+                    other.GetComponent<PlayerMovement>().Friction*=0.1f;
+                }
+            }
+        }
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player")){
+            other.GetComponent<PlayerMovement>().Friction=other.GetComponent<PlayerMovement>().FrictionPRESET;
         }
     }
     public void Disappear()

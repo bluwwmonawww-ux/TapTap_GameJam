@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8621971555625118348}
   - component: {fileID: 5169072432769723276}
   - component: {fileID: 5854822157757156309}
+  - component: {fileID: 7957874803718343768}
   m_Layer: 0
   m_Name: Square
   m_TagString: Ground
@@ -137,3 +138,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7957874803718343768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2483519429381717688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4376fdd773898634caea5a761905e43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClimableWall
