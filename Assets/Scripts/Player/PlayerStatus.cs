@@ -37,6 +37,10 @@ public class PlayerStatus : MonoBehaviour
         gameObject.GetComponent<PlayerMovement>().Force=Vector2.zero;
         gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         Health = 100;
+        gameObject.GetComponent<PlayerTimeScale>().StopTimeScale();
+        
+        // 恢复AD键控制，防止复活后一直失控
+        gameObject.GetComponent<PlayerMovement>().SetADOutOfControl(false, false);
 
     }
     private IEnumerator PlayerDying(float i=3)

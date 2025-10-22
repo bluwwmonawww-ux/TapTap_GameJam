@@ -67,6 +67,11 @@ public class PlayerMovement : MonoBehaviour
      [SerializeField]private bool jumpPressedLastFrame; // 跟踪上一帧的跳跃输入状态
     [SerializeField] public  bool InverseAD;
     
+    // AD键失控相关变量
+    private bool isADOutOfControl = false;  // 是否AD键失控
+    private bool forceLeftInput = false;    // 是否强制向左输入
+    private bool forceRightInput = false;   // 是否强制向右输入
+    
     // 爬墙相关变量***********************
     public bool isWallSliding;
     public bool isWallClimbing;
@@ -181,8 +186,29 @@ public class PlayerMovement : MonoBehaviour
         
         if (!InhibitInput)
         {
-
-            moveInput = moveAction.action.ReadValue<Vector2>();
+            // 检查是否AD键失控
+            if (isADOutOfControl)
+            {
+                // AD键失控时，使用强制输入
+                if (forceLeftInput)
+                {
+                    moveInput = new Vector2(-1f, 0f); // 强制向左
+                }
+                else if (forceRightInput)
+                {
+                    moveInput = new Vector2(1f, 0f);  // 强制向右
+                }
+                else
+                {
+                    moveInput = Vector2.zero; // 无输入
+                }
+            }
+            else
+            {
+                // 正常输入
+                moveInput = moveAction.action.ReadValue<Vector2>();
+            }
+            
             if (InverseAD)
             {
                 moveInput = new Vector2(-moveInput.x, moveInput.y);
@@ -286,13 +312,36 @@ public class PlayerMovement : MonoBehaviour
         Vector2 leftRayStart = rayStart - (Vector2)transform.right * (playerWidth + 0.1f);
         Vector2 rightRayStart = rayStart + (Vector2)transform.right * (playerWidth + 0.1f);
         
-        // 检测左侧墙壁
-        RaycastHit2D leftWallHit = Physics2D.Raycast(leftRayStart, -(Vector2)transform.right, wallCheckDistance, wallLayer);
-        isTouchingLeftWall = leftWallHit.collider != null && leftWallHit.collider.GetComponent<ClimableWall>() != null;
+        // 使用 RaycastAll 检测左侧所有碰撞体
+        RaycastHit2D[] leftWallHits = Physics2D.RaycastAll(leftRayStart, -(Vector2)transform.right, wallCheckDistance, wallLayer);
+        bool foundLeftWall = false;
         
-        // 检测右侧墙壁
-        RaycastHit2D rightWallHit = Physics2D.Raycast(rightRayStart, (Vector2)transform.right, wallCheckDistance, wallLayer);
-        isTouchingRightWall = rightWallHit.collider != null && rightWallHit.collider.GetComponent<ClimableWall>() != null;
+        // 遍历所有命中的左侧碰撞体
+        foreach (RaycastHit2D hit in leftWallHits)
+        {
+            if (hit.collider != null && hit.collider.GetComponent<ClimableWall>() != null)
+            {
+                foundLeftWall = true;
+                break;
+            }
+        }
+        
+        // 使用 RaycastAll 检测右侧所有碰撞体
+        RaycastHit2D[] rightWallHits = Physics2D.RaycastAll(rightRayStart, (Vector2)transform.right, wallCheckDistance, wallLayer);
+        bool foundRightWall = false;
+        
+        // 遍历所有命中的右侧碰撞体
+        foreach (RaycastHit2D hit in rightWallHits)
+        {
+            if (hit.collider != null && hit.collider.GetComponent<ClimableWall>() != null)
+            {
+                foundRightWall = true;
+                break;
+            }
+        }
+        
+        isTouchingLeftWall = foundLeftWall;
+        isTouchingRightWall = foundRightWall;
         
         // 判断是否在爬墙（需要按住A或D键）
         bool isHoldingWallInput = (isTouchingLeftWall && moveInput.x < -0.1f) || (isTouchingRightWall && moveInput.x > 0.1f);
@@ -621,5 +670,47 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity *= 0.2f;
         Unforced=false;
         InhibitInput=false;
+    }
+    
+    // AD键失控控制接口
+    /// <summary>
+    /// 设置AD键失控状态
+    /// </summary>
+    /// <param name="forceLeft">是否强制向左</param>
+    /// <param name="forceRight">是否强制向右</param>
+    public void SetADOutOfControl(bool forceLeft, bool forceRight)
+    {
+        isADOutOfControl = forceLeft || forceRight;
+        forceLeftInput = forceLeft;
+        forceRightInput = forceRight;
+        
+        if (isADOutOfControl)
+        {
+            Debug.Log($"AD键失控设置: 强制向左={forceLeft}, 强制向右={forceRight}");
+        }
+        else
+        {
+            Debug.Log("AD键恢复正常控制");
+        }
+    }
+    
+    /// <summary>
+    /// 检查AD键是否失控
+    /// </summary>
+    /// <returns>是否AD键失控</returns>
+    public bool IsADOutOfControl()
+    {
+        return isADOutOfControl;
+    }
+    
+    /// <summary>
+    /// 获取当前强制输入方向
+    /// </summary>
+    /// <returns>强制输入方向：-1向左，1向右，0无强制</returns>
+    public int GetForceInputDirection()
+    {
+        if (forceLeftInput) return -1;
+        if (forceRightInput) return 1;
+        return 0;
     }
 }
