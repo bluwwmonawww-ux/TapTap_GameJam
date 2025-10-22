@@ -1,0 +1,178 @@
+using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+
+[System.Serializable]
+public class PlayerActionFrame
+{
+    public float timestamp;
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector2 moveDir;
+    public bool isGrounded;
+    public float currentSpeed;
+    public bool isJumping;
+    public Vector2 velocity;
+
+    public string sceneName;
+
+    public PlayerActionFrame(float time, Vector3 pos, Quaternion rot, Vector2 move, bool ground, float speed, bool jump, Vector2 vel, string scene)
+    {
+        timestamp = time;
+        position = pos;
+        rotation = rot;
+        moveDir = move;
+        isGrounded = ground;
+        currentSpeed = speed;
+        isJumping = jump;
+        velocity = vel;
+        sceneName = scene;
+    }
+}
+
+public class PlayerActionRecorder : MonoBehaviour
+{
+    public static PlayerActionRecorder Instance { get; private set; }
+
+    [Header("记录设置")]
+    [SerializeField] private float recordDuration = 2f; // 记录2秒的数据
+    [SerializeField] private float recordInterval = 0.02f;
+    const string PLAYER_DATA_FILE_NAME = "PlayerData";
+    private Queue<PlayerActionFrame> actionHistory = new Queue<PlayerActionFrame>();
+    private PlayerMovement playerMovement;
+    private PhysicCheck physicsCheck;
+    private PlayerCommand playerCommand;
+    private Rigidbody2D playerRigidBody;
+    
+    private float lastRecordTime;
+    
+    void Start()
+    {
+        playerMovement = GetComponent<PlayerMovement>();
+        physicsCheck = GetComponent<PhysicCheck>();
+        playerCommand = GetComponent<PlayerCommand>();
+        playerRigidBody = GetComponent<Rigidbody2D>();
+    }
+    
+    void Update()
+    {
+        RecordPlayerAction();
+        CleanOldRecords();
+    }
+    
+    private void RecordPlayerAction()
+    {
+        if (Time.time - lastRecordTime >= recordInterval)
+        {
+            Vector3 currentPos = transform.position;
+            Quaternion currentRot = transform.rotation;
+            Vector2 currentMoveDir = playerCommand.moveDir;
+
+            bool currentGrounded = physicsCheck.isGround;
+            float currentSpeed = playerMovement.GetCurrentSpeed();
+            bool currentJumping = playerRigidBody.linearVelocity.y > 0.1f;
+            Vector2 currentVelocity = playerRigidBody.linearVelocity;
+            string currentScene = SceneManager.GetActiveScene().name;
+            PlayerActionFrame frame = new PlayerActionFrame(
+                Time.time, currentPos, currentRot, currentMoveDir,
+                currentGrounded, currentSpeed, currentJumping, currentVelocity, currentScene
+            );
+
+            actionHistory.Enqueue(frame);
+            lastRecordTime = Time.time;
+        }
+    }
+    
+    private void CleanOldRecords()
+    {
+        float cutoffTime = Time.time - recordDuration;
+        while (actionHistory.Count > 0 && actionHistory.Peek().timestamp < cutoffTime)
+        {
+            actionHistory.Dequeue();
+        }
+    }
+    
+    public PlayerActionFrame GetActionFrame(float timeOffset)
+    {
+        float targetTime = Time.time - timeOffset;
+        
+        foreach (var frame in actionHistory)
+        {
+            if (frame.timestamp >= targetTime)
+            {
+                return frame;
+            }
+        }
+        
+        return null; 
+    }
+    
+    public int GetHistoryCount()
+    {
+        return actionHistory.Count;
+    }
+    
+    public void ClearHistory()
+    {
+        actionHistory.Clear();
+    }
+
+    public void Save()
+    {
+        if (actionHistory.Count > 0)
+        {
+            // 保存队列最后一帧
+            PlayerActionFrame lastFrame = null;
+            foreach (var frame in actionHistory)
+            {
+                lastFrame = frame;
+            }
+            SaveSystemTutorial.SaveSystem.SaveByJson(PLAYER_DATA_FILE_NAME, lastFrame);
+            Debug.Log("已保存玩家状态");
+        }
+    }
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    public void Load()
+    {
+        var saveData = SaveSystemTutorial.SaveSystem.LoadFromJson<PlayerActionFrame>(PLAYER_DATA_FILE_NAME);
+        if (saveData != null)
+        {
+            transform.position = saveData.position;
+            transform.rotation = saveData.rotation;
+            
+            // 重置速度，避免继续下坠
+            if (playerRigidBody != null)
+            {
+                playerRigidBody.linearVelocity = Vector2.zero;
+                playerRigidBody.angularVelocity = 0f;
+            }
+
+            Debug.Log($"已读取玩家状态，位置: {saveData.position}");
+        }
+        else
+        {
+            Debug.LogWarning("没有找到保存的玩家数据!");
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Born"))
+        {
+            Save();
+        }
+    }
+
+}
+
