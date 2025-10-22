@@ -84,7 +84,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &6900379479888995000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,6 +116,7 @@ GameObject:
   - component: {fileID: 2804357442635977232}
   - component: {fileID: 8990998833327379436}
   - component: {fileID: 6030648124469082589}
+  - component: {fileID: 6035661747346980043}
   m_Layer: 0
   m_Name: TimeLimitCube
   m_TagString: Ground
@@ -265,3 +266,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4376fdd773898634caea5a761905e43a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClimableWall
+--- !u!114 &6035661747346980043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7818136232371936296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27368379aabd9dd4a9c56d21d29d728b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeLimitCube
+  Disappear: 0
+  FadeInTime: 0.2
+  DisplayTime: 2
+  Staytime: -1
+  ContactTime: 0.3

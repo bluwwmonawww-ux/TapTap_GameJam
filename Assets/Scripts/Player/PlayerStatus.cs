@@ -41,10 +41,15 @@ public class PlayerStatus : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("δ�ҵ� PlayerActionRecorder ");
+            Debug.LogWarning("Î´ÕÒµ½ PlayerActionRecorder ");
         }
         Health = 100;
+        gameObject.GetComponent<PlayerTimeScale>().StopTimeScale();
         
+        // æ¢å¤ADé®æ§å¶ï¼é²æ­¢å¤æ´»åä¸ç´å¤±æ§
+        gameObject.GetComponent<PlayerMovement>().SetADOutOfControl(false, false);
+
+
     }
 
     private IEnumerator PlayerDying(float i=3)
