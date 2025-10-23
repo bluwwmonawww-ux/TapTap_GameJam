@@ -1,0 +1,13 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/DialogueSystem/CustomUI/DialogueEdit.uss?fileID=7433441132597879392&amp;guid=133f573bf470e2a4cac441143400fac6&amp;type=3#DialogueEdit" />
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="Left" style="flex-grow: 0.5;">
+            <ui:Label text="Inspector" name="Inspector" enable-rich-text="true" />
+            <DialogueSystem.EditView.InspectorViewer style="flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Right" style="flex-grow: 1; flex-direction: column;">
+            <ui:Label text="NodeTreeView" name="NodeTreeView" enable-rich-text="true" parse-escape-sequences="true" triple-click-selects-line="false" />
+            <DialogueSystem.EditView.NodeTreeViewer focusable="true" style="height: 465px; flex-grow: 1;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
