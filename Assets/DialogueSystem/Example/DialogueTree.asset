@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6510061661079178564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7e0c4b7c7244bf9364546b22a251ea, type: 3}
+  m_Name: SpeechNode
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSystem.Scripts.SpeechNode
+  position: {x: 422, y: 428}
+  nodeGuid: 1773cc9f-a5c4-46a7-b313-4ecfbe0a60f2
+  nodeState: 1
+  text: "\u53EF\u4E0D\u662F\u561B\uFF0C\u5C31\u662F\uFF0C\u54EA\u4F4D\u8001\u7237\u9881\u7684\u89C4\u77E9\u6765\u7740?\u6211\u60F3\u4E0D\u8D77\u6765\u4E86\uFF0C\u6211\u8BB0\u5F97\u6211\u4EEC\u597D\u4E45\u6CA1\u6709\u65B0\u8001\u7237\u4E86"
+  sprite: {fileID: 0}
+  characterName: 
+  childrenNodes:
+  - {fileID: -2404664944762324947}
+--- !u!114 &-2404664944762324947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7e0c4b7c7244bf9364546b22a251ea, type: 3}
+  m_Name: SpeechNode
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSystem.Scripts.SpeechNode
+  position: {x: 422, y: 546}
+  nodeGuid: 60d72868-c3b0-465c-bc8b-03f692aab617
+  nodeState: 1
+  text: "\u563F\uFF0C\u60F3\u90A3\u4E48\u591A\u5E72\u561B\uFF0C\u5403\u597D\u559D\u597D\u624D\u662F\u6B63\u9053"
+  sprite: {fileID: 0}
+  characterName: 
+  childrenNodes:
+  - {fileID: 442845873118316593}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0f902947cbd485795bf262364f0c871, type: 3}
+  m_Name: DialogueTree
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSystem.Scripts.DialogueTree
+  rootNode: {fileID: 5216041893213873758}
+  currentNode: {fileID: 5216041893213873758}
+  nodeList:
+  - {fileID: 5216041893213873758}
+  - {fileID: 4489933904159161426}
+  - {fileID: -6510061661079178564}
+  - {fileID: 5475068921405730302}
+  - {fileID: -2404664944762324947}
+  - {fileID: 442845873118316593}
+--- !u!114 &442845873118316593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7e0c4b7c7244bf9364546b22a251ea, type: 3}
+  m_Name: SpeechNode
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSystem.Scripts.SpeechNode
+  position: {x: 431, y: 660}
+  nodeGuid: 4ee394df-9dd2-4a2e-872e-88dc96fd2dbd
+  nodeState: 1
+  text: "\u4E3B\u89D2\u5728\u9644\u8FD1\u7684\u56F0\u60D1(\u8001\u7237?\u6211\u6B7B\u540E\u54EA\u4F4D\u7EE7\u4EFB\u8005\u7ADF\u7136\u7834\u4E86\u6211\u7684\u89C4\u77E9\uFF0C\u7ED9\u6751\u6C11\u8BBE\u4E0B\u7981\u8DB3?)"
+  sprite: {fileID: 0}
+  characterName: 
+  childrenNodes: []
+--- !u!114 &4489933904159161426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7e0c4b7c7244bf9364546b22a251ea, type: 3}
+  m_Name: SpeechNode
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSystem.Scripts.SpeechNode
+  position: {x: 431, y: 186}
+  nodeGuid: a8fee74a-06fa-44a1-8891-6318fd6ac69e
+  nodeState: 1
+  text: "\u4F60\u77E5\u9053\u5417\uFF0C\u90A3\u7247\u552C\u4EBA\u7684\u5730\u754C\u65C1\u79CD\u51FA\u6765\u7684\u7CAE\u98DF\u9897\u5927\u7C92\u5706"
+  sprite: {fileID: 0}
+  characterName: "\u6751\u6C11A"
+  childrenNodes:
+  - {fileID: 5475068921405730302}
+--- !u!114 &5216041893213873758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2e8eb3ae464a8fb7898323663924d1, type: 3}
+  m_Name: RootNode
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSystem.Scripts.RootNode
+  position: {x: 431, y: 70}
+  nodeGuid: e7db605c-4520-4e42-991d-326731e7d338
+  nodeState: 1
+  text: 
+  sprite: {fileID: 0}
+  characterName: 
+  childrenNodes:
+  - {fileID: 4489933904159161426}
+--- !u!114 &5475068921405730302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7e0c4b7c7244bf9364546b22a251ea, type: 3}
+  m_Name: SpeechNode
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSystem.Scripts.SpeechNode
+  position: {x: 431, y: 313}
+  nodeGuid: 37de8d7f-0155-4a8f-8185-fce4572f512a
+  nodeState: 1
+  text: "\u53EF\u4E0D\u662F\u4E48\uFF0C\u90A3\u716E\u51FA\u6765\u7684\u996D\uFF0C\u5567\u5567\u5567\uFF0C\u9999\u7684\u72E0\u5450\uFF0C\u5C31\u662F\u5F97\u5C0F\u5FC3\uFF0C\u4E0D\u80FD\u72AF\u4E86\u8001\u7237\u7684\u89C4\u77E9\u8D8A\u4E86\u754C\uFF0C\u8FD9\u4E00\u591A\u8FC8\u4E86\u4E00\u6B65\uFF0C\u53EF\u5C31\u56DE\u4E0D\u6765\u4E86"
+  sprite: {fileID: 0}
+  characterName: "\u6751\u6C11B"
+  childrenNodes:
+  - {fileID: -6510061661079178564}

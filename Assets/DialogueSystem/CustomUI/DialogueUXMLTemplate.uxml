@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="Left" style="flex-grow: 0.3;">
+            <ui:Label text="Inspector" name="Inspector" style="-unity-font-style: bold;" />
+            <DialogueSystem.EditView.InspectorViewer style="flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Right" style="flex-grow: 1;">
+            <ui:Label text="Viewer" name="Viewer" style="-unity-font-style: bold; -unity-text-align: upper-left;" />
+            <DialogueSystem.EditView.NodeTreeViewer style="flex-grow: 1;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
