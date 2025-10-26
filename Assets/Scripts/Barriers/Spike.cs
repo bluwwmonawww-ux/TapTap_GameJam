@@ -29,7 +29,7 @@ public class Spike : MonoBehaviour
 
         }
     }
-
+   
     //private void OnTriggerExit2D(Collider2D other)
     //{
     //    // 检查离开的对象是否是玩家

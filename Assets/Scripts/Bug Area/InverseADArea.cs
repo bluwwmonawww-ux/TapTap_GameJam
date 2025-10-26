@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections;
 public class InverseADArea : MonoBehaviour
 {
     private PlayerMovement playerMovement;
@@ -16,33 +16,51 @@ public class InverseADArea : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // ¼ì²é½øÈëµÄ¶ÔÏóÊÇ·ñÊÇÍæ¼Ò
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (other.CompareTag("Player"))
         {
-            playerMovement = other.GetComponent<PlayerMovement>();
 
            
-                playerInArea = true;
-
-                playerMovement.InverseAD = true;
+                // playerInArea = true;
+                StartCoroutine(InverseAD());
+                // playerMovement.InverseAD = true;
 
             
         }
     }
 
-    // µ±ÆäËûÅö×²ÌåÀë¿ª´¥·¢Æ÷Ê±µ÷ÓÃ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ï¿½ë¿ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
     private void OnTriggerExit2D(Collider2D other)
     {
-        // ¼ì²éÀë¿ªµÄ¶ÔÏóÊÇ·ñÊÇÍæ¼Ò
-        if (other.CompareTag("Player") && playerInArea)
+        // ï¿½ï¿½ï¿½ï¿½ë¿ªï¿½Ä¶ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        if (other.CompareTag("Player") )//&& playerInArea)
         {
             
-                // »Ö¸´Ô­Ê¼Á¦
-                playerMovement.InverseAD = false;
+                // ï¿½Ö¸ï¿½Ô­Ê¼ï¿½ï¿½
+                StartCoroutine(ResetAD());
             
 
-            playerInArea = false;
-            playerMovement = null;
+            // playerInArea = false;
         }
+    }
+    private IEnumerator InverseAD(){
+
+float time = 0;
+while(time < 0.5f){
+    time += Time.deltaTime;
+    
+    yield return null;
+}
+playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+playerMovement.InverseAD = true;
+    }
+    private IEnumerator ResetAD(){
+        float time = 0;
+        while(time < 0.5f){
+            time += Time.deltaTime;
+            yield return null;
+        }
+        playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+        playerMovement.InverseAD = false;
     }
 }
