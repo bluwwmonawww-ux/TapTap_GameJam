@@ -66,11 +66,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool jumpPressed;
      [SerializeField]private bool jumpPressedLastFrame; // 跟踪上一帧的跳跃输入状态
     [SerializeField] public  bool InverseAD;
-    
+
     // AD键失控相关变量
-    private bool isADOutOfControl = false;  // 是否AD键失控
-    private bool forceLeftInput = false;    // 是否强制向左输入
-    private bool forceRightInput = false;   // 是否强制向右输入
+    [SerializeField] private bool isADOutOfControl = false;  // 是否AD键失控
+    [SerializeField] private bool forceLeftInput = false;    // 是否强制向左输入
+    [SerializeField] private bool forceRightInput = false;   // 是否强制向右输入
     
     // 爬墙相关变量***********************
     public bool isWallSliding;
